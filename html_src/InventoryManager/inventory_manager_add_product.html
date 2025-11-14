@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../styles.css">
+    </head>
+    <body>
+      <h2>Add product details</h2><br><br>
+        <form method='POST'>
+            Product ID : <input type="text" name="ProductID" required><br><br>
+            Product Name : <input type="text" name="Name" required><br><br>
+            Description : <input type="text" name="Description" required><br><br>
+            Unit Price : <input type="text" name="UnitPrice" required><br><br>
+            Unit type : <input type="radio" name="UnitType" value="pcs" checked>Pieces<br><br>
+            Color : <input type="text" name="Color" required><br><br>
+            Size : <input type="text" name="Size" required><br><br>
+            Discount : <input type="text" name="Discount" required><br><br>
+            <input type="submit" name="Submit" value="Submit" class="button">
+        </form>
+        <a href='/InventoryManager' class="button">Back</a>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Invoice Details - Shree Laxmi Collection</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      h3 { display: inline; }
+      pre { tab-size: 8; }
+      table { border-collapse: collapse; width: 80%; margin: auto; }
+      th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+      th { background-color: #f2f2f2; }
+      .button { display: inline-block; padding: 8px 16px; margin: 10px; background-color: #ffcc00; text-decoration: none; color: black; border-radius: 5px; }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <h1 style="text-align: center;"><strong>Shree Laxmi Collection</strong></h1>
+    <p style="text-align: center;">Narephat Kathmandu, Nepal</p>
+    <hr>
+
+    <pre><h3>Invoice ID   :</h3> {{ invoice_id }}    <h3>Timestamp :</h3> {{ timestamp }}<br><br></pre>
+    <pre><h3>Payment mode :</h3> {{ payment_mode }}<br><br></pre>
+
+    <!-- Invoice Products -->
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Color</th>
+          <th>Size</th>
+          <th>Quantity (pcs)</th>
+          <th>Unit Price</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in invoice %}
+        <tr>
+          {% for d in row %}
+          <td>{{ d }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Totals -->
+    <pre><h3>Total      :</h3> {{ _total }}<br></pre>
+    <pre><h3>Discount given :</h3> {{ discount_given }}<br></pre>
+    <pre><h3>Bill Amount :</h3> {{ invoice_total - discount_given }}<br></pre>
+
+    <!-- Navigation Buttons -->
+    <center>
+      <a href='/BillDesk' class="button">Back</a>
+      <a href='/BillDesk/PrintInvoiceCopy' class="button">Print</a>
+    </center>
+  </body>
+</html>

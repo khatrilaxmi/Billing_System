@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Additional Discount</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../styles.css">
+    </head>
+    <body>
+        <h2>Enter the Invoice ID and Discount</h2>
+        <br><br>
+        <form method="POST">
+            <label for="invoice_id">Invoice ID:</label>
+            <input type="text" id="invoice_id" name="InvoiceID" required>
+            <br><br>
+
+            <label for="discount">Additional Discount (%):</label>
+            <input type="number" id="discount" name="DiscountGiven" min="0" max="100" required>
+            <br><br>
+
+            <input type="submit" class="button" value="Give Discount">
+        </form>
+
+        <br><br>
+        <a href="/BillDesk" class="button">Back</a>
+    </body>
+</html>

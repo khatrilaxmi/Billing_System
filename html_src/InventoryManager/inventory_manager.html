@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Manager Home</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #d35400;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        h3 {
+            color: #34495e;
+            margin: 20px 0 10px 0;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        a.button {
+            text-align: center;
+        }
+        .back-button {
+        width: auto;           /* Make it only as wide as text */
+        background-color: #34495e;  /* Dark gray/black button */
+        padding: 10px 20px;
+        margin-top: 20px;
+         }
+
+     .back-button:hover {
+     background-color: #2c3e50;
+     transform: translateY(-2px);
+      }
+
+    </style>
+</head>
+<body>
+    <h2>Choose One of the Options</h2>
+    <form method="POST" action="">
+        <h3>Products:</h3>
+        <input type="submit" name="AddProduct" value="Add a Product" class="button">
+        <input type="submit" name="ViewProducts" value="View Products" class="button">
+
+        <h3>Orders:</h3>
+        <input type="submit" name="PlaceOrder" value="Place an Order" class="button">
+        <input type="submit" name="ReceiveOrder" value="Receive an Order" class="button">
+        <input type="submit" name="CancelOrder" value="Cancel an Order" class="button">
+        <input type="submit" name="OrderDetails" value="Order Details" class="button">
+        <input type="submit" name="OrdersBetweenDates" value="Orders Between Dates" class="button">
+
+        <h3>Inventory:</h3>
+        <input type="submit" name="ViewInventory" value="View Inventory" class="button">
+        <input type="submit" name="TransactionLog" value="View Transaction Log" class="button">
+        <input type="submit" name="ProductDateTransactionLog" value="View Product Transactions By Date" class="button">
+    </form>
+    <br>
+   <a href='/' class="button back-button">Back</a>
+</body>
+</html>

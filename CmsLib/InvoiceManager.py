@@ -1,0 +1,151 @@
+# CmsLib/InvoiceManager.py
+from CmsLib.TokenManager import *
+
+# Global invoice counters
+next_invoice_id = None
+next_invoice_id_read = 0
+
+class InvoiceManager:
+
+    # ------------------- GENERATE INVOICE -------------------
+    @staticmethod
+    def __generate_invoice(pysql, token_ids, payment_mode):
+        global next_invoice_id, next_invoice_id_read
+
+        # Initialize next_invoice_id
+        if not next_invoice_id_read:
+            sql_stmt = "SELECT COUNT(*) FROM `Invoices`"
+            pysql.run(sql_stmt)
+            next_invoice_id = pysql.scalar_result
+            next_invoice_id_read = 1
+
+        invoice_has_products = False
+        invoice_total = 0
+
+        # Validate tokens and calculate invoice total
+        for token in token_ids:
+            if not TokenManager._TokenManager__is_token_assigned(pysql, token):
+                return 1  # Token not assigned
+
+            token_has_products = TokenManager._TokenManager__token_has_products(pysql, token)
+            if token_has_products:
+                sql_stmt = """
+                    SELECT SUM(`Quantity` * `UnitPrice` * (1 - `CurrentDiscount` / 100))
+                    FROM `TokensSelectProducts`
+                    JOIN `Products` USING (`ProductID`)
+                    WHERE `TokenID` = %s
+                """
+                pysql.run(sql_stmt, (token,))
+                invoice_total += pysql.scalar_result or 0
+
+            invoice_has_products = invoice_has_products or token_has_products
+
+        if not invoice_has_products:
+            return 2  # No products to bill
+
+        if payment_mode not in ["cash", "card", "wallet"]:
+            return 3  # Invalid payment mode
+
+        # Generate invoice ID
+        invoice_id = "INV-" + format(next_invoice_id, "010d")
+
+        # Create invoice record
+        sql_stmt = """
+            INSERT INTO `Invoices`(`InvoiceID`, `InvoiceDate`, `InvoiceTotal`, `PaymentMode`)
+            VALUES (%s, CURRENT_TIMESTAMP, %s, %s)
+        """
+        pysql.run(sql_stmt, (invoice_id, invoice_total, payment_mode))
+
+        # Link tokens to invoice
+        token_tuples = [(token,) for token in token_ids]
+        sql_stmt = "UPDATE `Tokens` SET `InvoiceID` = %s, `Assigned?` = FALSE WHERE `TokenID` = %s"
+        pysql.run_many(sql_stmt, [(invoice_id, t[0]) for t in token_tuples])
+
+        # Fetch product details (with Size & Color)
+        sql_stmt = """
+            SELECT p.`ProductID`, p.`Name`, p.`Size`, p.`Color`,
+                   SUM(tsp.`Quantity`) AS `Quantity`, p.`UnitPrice`, 0.0 AS `TaxAmount`, 0.0 AS `GSTAmount`, p.`CurrentDiscount`
+            FROM `TokensSelectProducts` tsp
+            JOIN `Products` p USING(`ProductID`)
+            WHERE tsp.`TokenID` IN (
+                SELECT `TokenID` FROM `Tokens` WHERE `InvoiceID` = %s
+            )
+            GROUP BY p.`ProductID`, p.`Name`, p.`Size`, p.`Color`, p.`UnitPrice`, p.`CurrentDiscount`
+        """
+        pysql.run(sql_stmt, (invoice_id,))
+        invoice_details = pysql.result
+
+        # Insert into ProductsInInvoices
+        sql_stmt = """
+            INSERT INTO `ProductsInInvoices`
+            (`InvoiceID`, `ProductID`, `Name`, `Size`, `Color`,
+             `Quantity`, `UnitPrice`, `TaxAmount`, `GSTAmount`, `Discount`)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        pysql.run_many(sql_stmt, [(invoice_id, *row) for row in invoice_details])
+
+        # Clear TokensSelectProducts
+        sql_stmt = "DELETE FROM `TokensSelectProducts` WHERE `TokenID` = %s"
+        pysql.run_many(sql_stmt, token_tuples)
+
+        next_invoice_id += 1
+        return invoice_id
+
+    # ------------------- ADDITIONAL DISCOUNT -------------------
+    @staticmethod
+    def __give_additional_discount(pysql, invoice_id, discount):
+        sql_stmt = "SELECT COUNT(*) FROM `Invoices` WHERE `InvoiceID` = %s"
+        pysql.run(sql_stmt, (invoice_id,))
+        if not pysql.scalar_result:
+            return 1  # Invoice not found
+        if discount < 0:
+            return 2  # Invalid discount
+        sql_stmt = "UPDATE `Invoices` SET `DiscountGiven` = %s WHERE `InvoiceID` = %s"
+        pysql.run(sql_stmt, (discount, invoice_id))
+        return 0
+
+    # ------------------- GET INVOICE DETAILS -------------------
+    @staticmethod
+    def __get_invoice_details(pysql, invoice_id):
+        sql_stmt = "SELECT * FROM `Invoices` WHERE `InvoiceID` = %s"
+        pysql.run(sql_stmt, (invoice_id,))
+        invoice_parameters = pysql.first_result
+
+        sql_stmt = """
+            SELECT `ProductID`, `Name`, `Size`, `Color`,
+                   `Quantity`, `UnitPrice`, `TaxAmount`, `GSTAmount`, `Discount`
+            FROM `ProductsInInvoices`
+            WHERE `InvoiceID` = %s
+        """
+        pysql.run(sql_stmt, (invoice_id,))
+        invoice_details = pysql.result
+
+        return invoice_parameters, invoice_details
+
+    # ------------------- GET INVOICES BY DATE -------------------
+    @staticmethod
+    def __get_invoices_by_date(pysql, date):
+        sql_stmt = """
+            SELECT `InvoiceID`, TIME(`InvoiceDate`), `InvoiceTotal`, `DiscountGiven`, `PaymentMode`
+            FROM `Invoices`
+            WHERE DATE(`InvoiceDate`) = %s
+        """
+        pysql.run(sql_stmt, (date,))
+        return pysql.result
+
+    # ------------------- PUBLIC WRAPPERS -------------------
+    @staticmethod
+    def generate_invoice(pysql, token_ids, payment_mode):
+        return pysql.run_transaction(InvoiceManager.__generate_invoice, token_ids, payment_mode)
+
+    @staticmethod
+    def give_additional_discount(pysql, invoice_id, discount):
+        return pysql.run_transaction(InvoiceManager.__give_additional_discount, invoice_id, discount)
+
+    @staticmethod
+    def get_invoice_details(pysql, invoice_id):
+        return pysql.run_transaction(InvoiceManager.__get_invoice_details, invoice_id, commit=False)
+
+    @staticmethod
+    def get_invoices_by_date(pysql, date):
+        return pysql.run_transaction(InvoiceManager.__get_invoices_by_date, date, commit=False)
