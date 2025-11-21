@@ -1,26 +1,98 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Additional Discount</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../styles.css">
-    </head>
-    <body>
-        <h2>Enter the Invoice ID and Discount</h2>
-        <br><br>
-        <form method="POST">
-            <label for="invoice_id">Invoice ID:</label>
-            <input type="text" id="invoice_id" name="InvoiceID" required>
-            <br><br>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Additional Discount</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
 
-            <label for="discount">Additional Discount (%):</label>
-            <input type="number" id="discount" name="DiscountGiven" min="0" max="100" required>
-            <br><br>
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+            text-align: center;
+        }
 
-            <input type="submit" class="button" value="Give Discount">
-        </form>
+        form {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-        <br><br>
-        <a href="/BillDesk" class="button">Back</a>
-    </body>
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .button {
+            display: inline-block;
+            width: 120px;
+            padding: 12px 0;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Enter the Invoice ID and Discount</h2>
+
+    <form method="POST">
+        <label for="invoice_id">Invoice ID:</label>
+        <input type="text" id="invoice_id" name="InvoiceID" placeholder="e.g., INV-001" required>
+
+        <label for="discount">Additional Discount (%):</label>
+        <input type="number" id="discount" name="DiscountGiven" placeholder="e.g., 10" min="0" max="100" required>
+
+        <div class="button-group">
+            <button type="submit" class="button">Give Discount</button>
+            <a href="/BillDesk" class="button">Back</a>
+        </div>
+    </form>
+
+</body>
 </html>

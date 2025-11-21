@@ -1,18 +1,72 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <title>Order details home</title>
+    <title>Order Details Home</title>
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Enter the Order ID</h2><br><br>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        input[type="text"] {
+            padding: 8px 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* space between buttons */
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            width: 100px;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter the Order ID</h2>
+
     <form method="POST" action="">
-      Order ID : <input type="text" name="OrderID" required><br><br>
-      <input type="submit" value="Submit" class="button">
+        <input type="text" name="OrderID" placeholder="Order ID" required><br>
+
+        <div class="form-buttons">
+            <input type="submit" value="Submit" class="button">
+            <a href="/InventoryManager" class="button">Back</a>
+        </div>
     </form>
-    <br><br>
-    <a href="/InventoryManager" class="button">Back</a>
-</form>
 </body>
 </html>

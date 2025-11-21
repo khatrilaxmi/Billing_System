@@ -1,32 +1,76 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Alert</title>
+<html lang="en">
+<head>
     <meta charset="utf-8">
+    <title>Alert</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" type="text/css" href="../svg-icons-animate.css"/>
-  </head>
-  <body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .svg-box {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
     <center>
-      <!-- Alert sign -->
-      <div class="svg-box">
-        <svg class="circular yellow-stroke">
-          <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-        </svg>
-        <svg class="alert-sign yellow-stroke">
-          <g transform="matrix(1,0,0,1,-615.516,-257.346)">
-            <g transform="matrix(0.56541,-0.56541,0.56541,0.56541,93.7153,495.69)">
-              <path class="line" d="M634.087,300.805L673.361,261.53" fill="none"/>
-            </g>
-            <g transform="matrix(2.27612,-2.46519e-32,0,2.27612,-792.339,-404.147)">
-              <circle class="dot" cx="621.52" cy="316.126" r="1.318" />
-            </g>
-          </g>
-        </svg>
-      </div>
-      <!-- Result -->
-      <h2>{{ result }}</h2><br><br>
-      <a href='/CounterOperator' class="button">Back</a>
+        <!-- Alert sign -->
+        <div class="svg-box">
+            <svg class="circular yellow-stroke">
+                <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            </svg>
+            <svg class="alert-sign yellow-stroke">
+                <g transform="matrix(1,0,0,1,-615.516,-257.346)">
+                    <g transform="matrix(0.56541,-0.56541,0.56541,0.56541,93.7153,495.69)">
+                        <path class="line" d="M634.087,300.805L673.361,261.53" fill="none"/>
+                    </g>
+                    <g transform="matrix(2.27612,-2.46519e-32,0,2.27612,-792.339,-404.147)">
+                        <circle class="dot" cx="621.52" cy="316.126" r="1.318" />
+                    </g>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Result -->
+        <h2>{{ result }}</h2>
+
+        <!-- Back button -->
+        <a href='/CounterOperator' class="button">Back</a>
     </center>
-  </body>
+</body>
 </html>

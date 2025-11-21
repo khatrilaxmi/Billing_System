@@ -1,73 +1,194 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Invoice Preview - Shree Laxmi Collection</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../styles.css">
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
-        <script type="text/javascript">
-            $(function() {
-                $("#mybutton").click(function (event) {
-                    $.getJSON('/BillDesk/PrintInvoice', {}, function(data) { });
-                    return false;
-                });
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Preview</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#mybutton").click(function(event) {
+                $.getJSON('/BillDesk/PrintInvoice', {}, function(data) { });
+                return false;
             });
-        </script>
-        <link href="https://fonts.googleapis.com/css?family=Ek+Mukta" rel="stylesheet">
-        <style>
-            h3 { display: inline; }
-            h4 { display: inline; }
-            pre { tab-size: 8; }
-        </style>
-    </head>
-    <body>
-        <!-- Header -->
-        <p style="text-align: left;">
-            <input type="button" id="mybutton" value="Print">
-            <span style="float: right;">Cash Invoice</span>
-        </p>
-        <h1 style="text-align: center;"><strong>Shree Laxmi Collection</strong></h1>
-        <p style="text-align: center;"><strong>Women's Clothing Store</strong></p>
-        <p style="text-align: center;">Khandbari-08, Sankhuwasabha, Nepal</p>
-        <br>
+        });
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Ek+Mukta" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ek Mukta', Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
 
-        <!-- Invoice Info -->
-        <h4>Invoice ID: {{ invoice_id }} &nbsp;&nbsp; Timestamp: {{ timestamp }}</h4><br><br>
-        <p><strong>Payment mode:</strong> {{ payment_mode }}</p><br>
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0;
+        }
 
-        <!-- Products Table -->
-        <table cellpadding="5" cellspacing="5">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Color</th>
-                    <th>Size</th>
-                    <th>Quantity</th>
-                    <th>Rate</th>
-                    <th>Total Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in invoice %}
-                <tr>
-                    {% for d in row %}
-                    <td>{{ d }}</td>
-                    {% endfor %}
-                </tr>
+        h2, h3, h4 {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        h3, h4 {
+            display: inline;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        pre {
+            tab-size: 8;
+            margin: 5px 0;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #mybutton {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px #aaa;
+            transition: all 0.3s ease;
+        }
+
+        #mybutton:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 6px #888;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                display: none;
+            }
+
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 12px;
+                border-radius: 6px;
+                box-shadow: 0 0 6px rgba(0,0,0,0.1);
+            }
+
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header-row">
+        <input type="button" id="mybutton" value="Print">
+        <span>Cash Invoice</span>
+    </div>
+
+    <h1>Invoice Preview</h1>
+    <p style="text-align: center;"><strong>Women's Clothing Store</strong></p>
+    <p style="text-align: center;">Narephat, Kathmandu, Nepal</p>
+    <br>
+
+    <!-- Invoice Info -->
+    <h4>Invoice ID: {{ invoice_id }} &nbsp;&nbsp; Timestamp: {{ timestamp }}</h4><br>
+    <p><strong>Payment mode:</strong> {{ payment_mode }}</p><br>
+
+    <!-- Products Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in invoice %}
+            <tr>
+                {% for d in row %}
+                <td>{{ d }}</td>
                 {% endfor %}
-            </tbody>
-        </table>
-        <br>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
 
-        <!-- Invoice Totals -->
-        <pre><h3>Total      :</h3> {{ _total }}</pre>
-        <pre><h3>Discount given :</h3> {{ discount_given }}</pre>
-        <pre><h3>Bill Amount :</h3> {{ invoice_total - discount_given }}</pre>
-        <br>
+    <!-- Invoice Totals -->
+    <pre><h3>Total      :</h3> {{ _total }}</pre>
+    <pre><h3>Discount given :</h3> {{ discount_given }}</pre>
+    <pre><h3>Bill Amount :</h3> {{ invoice_total - discount_given }}</pre>
+    <br>
 
-        <!-- Footer Note -->
-        <p style="text-align: center; font-style: italic; color: #555;">
-            Thank you for shopping at Shree Laxmi Collection!
-        </p>
-    </body>
+    <!-- Footer Note -->
+    <p class="footer-note">
+        Thank you for shopping with us!
+    </p>
+
+</body>
 </html>

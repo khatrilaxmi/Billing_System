@@ -1,18 +1,89 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Enter Token ID</title>
-    <meta charset="utf-8">
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Enter the Token ID</h2><br><br>
-    <form method='POST'>
-      <h3>Token ID :  </h3>
-      <input type="text" name="TokenID" value="" required><br>
-      <input type="submit" name="Submit" value="Submit" class="button">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 25px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.15);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .button {
+            display: inline-block;
+            width: 140px;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter the Token ID</h2>
+
+    <form method="POST">
+        <h3>Token ID:</h3>
+        <input type="text" name="TokenID" placeholder="e.g., TOK-01" required>
+        <div class="button-group">
+            <input type="submit" name="Submit" value="Submit" class="button">
+            <a href='/TokenManager' class="button">Back</a>
+        </div>
     </form>
-    <br><br>
-    <a href='/TokenManager' class="button">Back</a>
-  </body>
+</body>
 </html>

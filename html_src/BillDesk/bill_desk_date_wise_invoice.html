@@ -1,17 +1,86 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Date Wise Invoice</title>
-    <meta charset="utf-8">
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Enter the date</h2><br><br>
-    <form method='POST'>
-      On Date : <input type="date" name="OnDate" required><br><br>
-      <input type="submit" name="Submit" value="Submit" class="button">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        form {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 6px #888;
+        }
+
+        .form-buttons {
+            margin-top: 25px;
+        }
+
+        .form-buttons a {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Enter the Date</h2>
+
+    <form method="POST">
+        <label for="OnDate">On Date:</label>
+        <input type="date" id="OnDate" name="OnDate" required>
+
+        <div class="form-buttons">
+            <input type="submit" value="Submit" class="button">
+            <a href="/BillDesk" class="button">Back</a>
+        </div>
     </form>
-    <br><br>
-    <a href='/BillDesk' class="button">Back</a>
-  </body>
+
+</body>
 </html>

@@ -1,59 +1,147 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Invoice Details - Shree Laxmi Collection</title>
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Details</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
-      h3 { display: inline; }
-      pre { tab-size: 8; }
-      table { border-collapse: collapse; width: 80%; margin: auto; }
-      th, td { border: 1px solid #333; padding: 8px; text-align: center; }
-      th { background-color: #f2f2f2; }
-      .button { display: inline-block; padding: 8px 16px; margin: 10px; background-color: #ffcc00; text-decoration: none; color: black; border-radius: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            }
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <!-- Header -->
-    <h1 style="text-align: center;"><strong>Shree Laxmi Collection</strong></h1>
-    <p style="text-align: center;">Narephat Kathmandu, Nepal</p>
-    <hr>
+</head>
+<body>
 
-    <pre><h3>Invoice ID   :</h3> {{ invoice_id }}    <h3>Timestamp :</h3> {{ timestamp }}<br><br></pre>
-    <pre><h3>Payment mode :</h3> {{ payment_mode }}<br><br></pre>
+<h2>Invoice Details</h2>
 
-    <!-- Invoice Products -->
-    <table>
-      <thead>
+<table>
+    <thead>
         <tr>
-          <th>Product</th>
-          <th>Color</th>
-          <th>Size</th>
-          <th>Quantity (pcs)</th>
-          <th>Unit Price</th>
-          <th>Total Amount</th>
+            <th>Product</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Amount</th>
         </tr>
-      </thead>
-      <tbody>
+    </thead>
+    <tbody>
         {% for row in invoice %}
         <tr>
-          {% for d in row %}
-          <td>{{ d }}</td>
-          {% endfor %}
+            <td data-label="Product">{{ row[0] }}</td>
+            <td data-label="Color">{{ row[1] }}</td>
+            <td data-label="Size">{{ row[2] }}</td>
+            <td data-label="Quantity">{{ row[3] }}</td>
+            <td data-label="Unit Price">{{ row[4] }}</td>
+            <td data-label="Total Amount">{{ row[5] }}</td>
         </tr>
         {% endfor %}
-      </tbody>
-    </table>
+    </tbody>
+</table>
 
-    <!-- Totals -->
-    <pre><h3>Total      :</h3> {{ _total }}<br></pre>
-    <pre><h3>Discount given :</h3> {{ discount_given }}<br></pre>
-    <pre><h3>Bill Amount :</h3> {{ invoice_total - discount_given }}<br></pre>
+<br><br>
 
-    <!-- Navigation Buttons -->
-    <center>
-      <a href='/BillDesk' class="button">Back</a>
-      <a href='/BillDesk/PrintInvoiceCopy' class="button">Print</a>
-    </center>
-  </body>
+<!-- Totals -->
+<table>
+    <tbody>
+        <tr><td>Total:</td><td>{{ _total }}</td></tr>
+        <tr><td>Discount given:</td><td>{{ discount_given }}</td></tr>
+        <tr><td>Bill Amount:</td><td>{{ invoice_total - discount_given }}</td></tr>
+    </tbody>
+</table>
+
+<center>
+    <a href='/BillDesk' class="button">Back</a>
+    <a href='/BillDesk/PrintInvoiceCopy' class="button">Print</a>
+</center>
+
+</body>
 </html>

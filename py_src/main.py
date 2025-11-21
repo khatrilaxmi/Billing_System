@@ -27,13 +27,13 @@ with app.app_context():
     # 2. Add sample women's clothing products
     # -----------------------------
     products = [
-        # ProductID, Name, Description, UnitPrice, UnitType, Size, Color, CurrentDiscount
-        ("KUR-001", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "pcs", "S", "Red", 0),
-        ("KUR-002", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "pcs", "M", "Red", 0),
-        ("SAR-003", "Silk Saree", "Pure Banarasi silk saree with golden border", 5200.00, "pcs", "L", "Golden", 0),
-        ("TOP-004", "Ladies Formal Top", "Office wear formal top (navy blue)", 1450.00, "pcs", "M", "Blue", 0),
-        ("SKT-005", "Long Skirt", "Printed chiffon long skirt", 1650.00, "pcs", "L", "Pink", 0),
-        ("DRS-006", "Party Dress", "Elegant evening gown", 3500.00, "pcs", "S", "Black", 0),
+        # ProductID, Name, Description, UnitPrice, Size, Color, CurrentDiscount
+        ("KUR-001", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "S", "Red", 0),
+        ("KUR-002", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "M", "Red", 0),
+        ("SAR-003", "Silk Saree", "Pure Banarasi silk saree with golden border", 5200.00, "L", "Golden", 0),
+        ("TOP-004", "Ladies Formal Top", "Office wear formal top (navy blue)", 1450.00, "M", "Blue", 0),
+        ("SKT-005", "Long Skirt", "Printed chiffon long skirt", 1650.00, "L", "Pink", 0),
+        ("DRS-006", "Party Dress", "Elegant evening gown", 3500.00, "S", "Black", 0),
     ]
 
     for pid, name, desc, price, unit_type, size, color, discount in products:
@@ -43,6 +43,7 @@ with app.app_context():
     # -----------------------------
     # 3. Initialize inventory
     # -----------------------------
+
     inventory_data = [
         ("KUR-001", "S", "Red", 50, 20, 10),
         ("KUR-002", "M", "Red", 40, 15, 10),
@@ -57,8 +58,7 @@ with app.app_context():
      sql_check = "SELECT COUNT(*) FROM Inventory WHERE ProductID=%s AND Size=%s AND Color=%s"
      pysql.run(sql_check, (pid, size, color))
      exists = pysql.scalar_result
-
-    if exists:
+     if exists:
         # Update existing inventory
         sql_update = """
             UPDATE Inventory
@@ -68,7 +68,7 @@ with app.app_context():
             WHERE ProductID=%s AND Size=%s AND Color=%s
         """
         pysql.run(sql_update, (stored, displayed, threshold, pid, size, color))
-    else:
+     else:
         # Insert new inventory
         sql_insert = """
             INSERT INTO Inventory
@@ -77,12 +77,13 @@ with app.app_context():
         """
         pysql.run(sql_insert, (pid, size, color, stored, displayed, threshold))
 
+
     # -----------------------------
     # 4. Generate tokens
     # -----------------------------
     # Remove old tokens
     pysql.run("DELETE FROM Tokens")
-
+    
     token_ids = [("TOK-" + format(i, "02d"),) for i in range(20)]
     pysql.run_many("INSERT INTO Tokens (TokenID) VALUES (%s)", token_ids)
 

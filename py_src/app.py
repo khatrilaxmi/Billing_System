@@ -100,7 +100,7 @@ def inventory_manager_add_product():
             return render_template('InventoryManager/inventory_manager_alert.html', result="Invalid Product ID format")
 
         retval = ProductManager.add_product(
-            pysql, product_id, name, description, unit_type, unit_price, size, color, current_discount
+            pysql, product_id, name, description, unit_price, size, color, current_discount
         )
 
         if retval == 0:

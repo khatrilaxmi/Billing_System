@@ -5,7 +5,12 @@ from CmsLib.TokenManager import *
 class CounterManager:
 
     # List of allowed female clothing product NAMES
-    female_products = ["Jacket", "T-Shirt", "Skirt", "Dress"]
+    @staticmethod
+    def __is_female_product(product_name):
+        keywords = ["Kurti", "Saree", "Top", "Skirt", "Dress", "Jacket", "Sari", 
+                    "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women"]
+        return any(keyword in product_name for keyword in keywords)
+
 
     # ------------------- DIRECT LOGIN -------------------
     @staticmethod
@@ -21,7 +26,7 @@ class CounterManager:
     @staticmethod
     def __add_counter_to_token(pysql, token_id, product_name, quantity, size, color):
         # Check if product is allowed
-        if product_name not in CounterManager.female_products:
+        if not CounterManager.__is_female_product(product_name):
             return 3  # Product not allowed
 
         # Token assigned check
@@ -37,7 +42,7 @@ class CounterManager:
             return 3  # Product not found
 
         # Check displayed inventory
-        displayed_quantity = InventoryManager._InventoryManager__get_displayed_quantity(pysql, product_id, color, size)
+        displayed_quantity, _ = InventoryManager._InventoryManager__get_displayed_quantity(pysql, product_id, size, color)
         if quantity <= 0:
             return 2
         if displayed_quantity < quantity:
@@ -66,13 +71,13 @@ class CounterManager:
                           VALUES (%s, %s, %s, %s, %s)"""
             pysql.run(sql_stmt, (token_id, product_id, quantity, size, color))
 
-        InventoryManager._InventoryManager__log_transaction(pysql, "COUNTER_SUB", product_id, color, size, quantity)
+        InventoryManager._InventoryManager__log_transaction(pysql, "COUNTER_SUB", product_id, size, color, quantity)
         return 0
 
     # ------------------- ADD INVENTORY TO COUNTER -------------------
     @staticmethod
     def __add_inventory_to_counter(pysql, product_name, quantity, size, color):
-        if product_name not in CounterManager.female_products:
+        if not CounterManager.__is_female_product(product_name):
             return 2  # Product not allowed
 
         # Get ProductID
@@ -82,7 +87,7 @@ class CounterManager:
         if not product_id:
             return 2
 
-        stored_quantity = InventoryManager._InventoryManager__get_stored_quantity(pysql, product_id, color, size)
+        stored_quantity = InventoryManager._InventoryManager__get_stored_quantity(pysql, product_id, size, color)
         if quantity <= 0:
             return 1
         if stored_quantity < quantity:
@@ -95,12 +100,13 @@ class CounterManager:
                       WHERE ProductID=%s AND Size=%s AND Color=%s"""
         pysql.run(sql_stmt, (quantity, quantity, product_id, size, color))
 
-        InventoryManager._InventoryManager__log_transaction(pysql, "INVENTORY_TO_COUNTER", product_id, color, size, quantity)
+        InventoryManager._InventoryManager__log_transaction(pysql, "INVENTORY_TO_COUNTER", product_id, size, color, quantity)
         return 0
 
     # ------------------- ADD TOKEN TO COUNTER -------------------
     @staticmethod
     def __add_token_to_counter(pysql, token_id, product_name, size, color):
+
         # Get ProductID
         sql = "SELECT ProductID FROM Products WHERE Name=%s AND Size=%s AND Color=%s"
         pysql.run(sql, (product_name, size, color))
@@ -126,7 +132,7 @@ class CounterManager:
                       WHERE ProductID=%s AND Size=%s AND Color=%s"""
         pysql.run(sql_stmt, (quantity, product_id, size, color))
 
-        InventoryManager._InventoryManager__log_transaction(pysql, "COUNTER_ADD", product_id, color, size, quantity)
+        InventoryManager._InventoryManager__log_transaction(pysql, "COUNTER_ADD", product_id, size, color, quantity)
         return 0
 
     # ------------------- PUBLIC METHODS -------------------

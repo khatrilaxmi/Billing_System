@@ -1,32 +1,74 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Failure</title>
+<html lang="en">
+<head>
     <meta charset="utf-8">
+    <title>Failure</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" type="text/css" href="../svg-icons-animate.css"/>
-  </head>
-  <body>
-    <!-- Red cross -->
-    <center>
-      <div class="svg-box">
-        <svg class="circular red-stroke">
-          <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-        </svg>
-        <svg class="cross red-stroke">
-          <g transform="matrix(0.79961,8.65821e-32,8.39584e-32,0.79961,-502.652,-204.518)">
-            <path class="first-line" d="M634.087,300.805L673.361,261.53" fill="none"/>
-          </g>
-          <g transform="matrix(-1.28587e-16,-0.79961,0.79961,-1.28587e-16,-204.752,543.031)">
-            <path class="second-line" d="M634.087,300.805L673.361,261.53"/>
-          </g>
-        </svg>
-      </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
 
-      <!-- Reason -->
-      <h2>{{ reason }}</h2>
-      <br><br>
-      <a href='/CounterOperator' class="button">Back</a>
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .svg-box {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <!-- Red cross -->
+        <div class="svg-box">
+            <svg class="circular red-stroke">
+                <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            </svg>
+            <svg class="cross red-stroke">
+                <g transform="matrix(0.79961,8.65821e-32,8.39584e-32,0.79961,-502.652,-204.518)">
+                    <path class="first-line" d="M634.087,300.805L673.361,261.53" fill="none"/>
+                </g>
+                <g transform="matrix(-1.28587e-16,-0.79961,0.79961,-1.28587e-16,-204.752,543.031)">
+                    <path class="second-line" d="M634.087,300.805L673.361,261.53"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Reason -->
+        <h2>{{ reason }}</h2>
+
+        <!-- Back button -->
+        <a href='/CounterOperator' class="button">Back</a>
     </center>
-  </body>
+</body>
 </html>

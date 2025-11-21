@@ -1,18 +1,107 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Add product to token</title>
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Return Product from Token</title>
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Enter Token ID and Product ID to be returned</h2><br><br>
-    <form method='POST'>
-      Token ID : <input type='text' name='TokenID' required><br><br>
-      Product ID : <input type='text' name='ProductID' required><br><br>
-      <input type='submit' class='button' value = 'Remove'>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        form {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            text-align: center;
+            margin-bottom: 25px; /* vertical space between fields */
+        }
+        .button {
+            display: inline-block;
+            width: 100px;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .input-row {
+           display: flex;
+           align-items: center;
+           margin-top: 15px;
+            margin-bottom: 25px;
+       }
+
+        .input-row label {
+           width: 120px;   /* fixed width so alignment stays clean */
+           text-align: right;
+           font-weight: bold;
+           margin-right: 10px;
+           font-weight: bold;
+       }
+
+        .input-row input {
+           flex: 1;
+           padding: 10px;
+           border: 1px solid #ccc;
+           border-radius: 5px;
+       }
+    </style>
+</head>
+<body>
+    <h2>Enter Token ID and Product ID to be returned</h2>
+
+    <form method="POST">
+        <div class="input-row">
+            <label for="TokenID">Token ID</label>
+            <input type="text" id="TokenID" name="TokenID" placeholder="e.g., TOK-01" required>
+        </div>
+
+        <div class="input-row">
+            <label for="ProductID">Product ID</label>
+            <input type="text" id="ProductID" name="ProductID" placeholder="e.g., KUR-001" required>
+        </div>
+
+        <div class="form-buttons">
+            <input type="submit" class="button" value="Remove">
+            <a href="/CounterOperator" class="button">Back</a>
+        </div>
     </form>
-    <br><br>
-    <a href='/CounterOperator' class="button">Back</a>
-  </body>
+</body>
 </html>

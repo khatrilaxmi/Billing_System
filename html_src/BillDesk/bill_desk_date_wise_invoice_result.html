@@ -1,33 +1,131 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Invoices on date</title>
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoices on Date - Shree Laxmi Collection</title>
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Invoices</h2><br><br>
-    <table cellpadding="5" cellspacing="5">
-      <thead>
-        <tr>
-          <th>Invoice ID</th>
-          <th>Time</th>
-          <th>Invoice Total</th>
-          <th>Discount Given</th>
-          <th>Payment Mode</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in invoices %}
-        <tr>
-          {% for d in row %}
-          <td>{{ d }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            font-size: 1rem;
+        }
+
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 12px 22px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .button {
+            display: inline-block;
+            width: 120px;
+            padding: 12px 0;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 12px;
+                border-radius: 6px;
+                box-shadow: 0 0 6px rgba(0,0,0,0.1);
+            }
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 5px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Invoices</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Invoice ID</th>
+                <th>Time</th>
+                <th>Invoice Total</th>
+                <th>Discount Given</th>
+                <th>Payment Mode</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in invoices %}
+            <tr>
+                {% for d in row %}
+                <td data-label="{{ loop.index0 == 0 and 'Invoice ID' or loop.index0 == 1 and 'Time' or loop.index0 == 2 and 'Invoice Total' or loop.index0 == 3 and 'Discount Given' or 'Payment Mode' }}">{{ d }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <br><br>
+
     <a href='/BillDesk' class="button">Back</a>
-  </body>
+
+</body>
 </html>

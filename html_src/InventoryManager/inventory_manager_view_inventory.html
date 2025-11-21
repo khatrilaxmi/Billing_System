@@ -1,35 +1,104 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Inventory</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="../styles.css"/>
-  </head>
-  <body>
-    <h2>Inventory details</h2><br><br>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Details</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f9f9f9;
+            margin: 20px;
+        }
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #27ae60; /* Main green like buttons */
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+        .back-button {
+            background-color: #27ae60;  
+            padding: 10px 20px;
+        }
+        .back-button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h2>Inventory Details</h2>
+
     <table>
-      <thead>
-        <tr>
-          <th>Product ID</th>
-          <th>Product Name</th>
-          <th>Size</th>
-          <th>Color</th>
-          <th>Stored Quantity</th>
-          <th>Displayed Quantity</th>
-          <th>Minimum Threshold</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in inventory %}
-        <tr>
-          {% for d in row %}
-          <td>{{ d }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>Stored Quantity</th>
+                <th>Displayed Quantity</th>
+                <th>Minimum Threshold</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in inventory %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] }}</td>
+                <td>{{ row[6] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <br><br>
-    <a href="/InventoryManager" class="button">Back</a>
-  </body>
+
+    <a href="/InventoryManager" class="button back-button">Back</a>
+</body>
 </html>

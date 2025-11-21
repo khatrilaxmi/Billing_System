@@ -1,36 +1,135 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Inventory transactions</title>
+<html lang="en">
+<head>
     <meta charset="utf-8">
+    <title>Inventory Transactions</title>
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h1>Inventory transactions</h1><br><br>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
 
-    <table cellpadding="5" cellspacing="5">
-      <thead>
-        <tr>
-          <th>Transaction ID</th>
-          <th>Product ID</th>
-          <th>Product Name</th>
-          <th>Transaction Type</th>
-          <th>Quantity</th> 
-          <th>Time Stamp</th>
+        h1 {
+            text-align: center;
+            color: #333;
+            text-shadow: 1px 1px 2px #aaa;
+            margin-bottom: 30px;
+        }
 
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in transactions %}
-        <tr>
-          {% for d in row %}
-          <td>{{ d }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                display: none;
+            }
+
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            }
+
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventory Transactions</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Transaction Type</th>
+                <th>Quantity</th>
+                <th>Time Stamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in transactions %}
+            <tr>
+                <td data-label="Transaction ID">{{ row[0] }}</td>
+                <td data-label="Product ID">{{ row[1] }}</td>
+                <td data-label="Product Name">{{ row[2] }}</td>
+                <td data-label="Transaction Type">{{ row[3] }}</td>
+                <td data-label="Quantity">{{ row[4] }}</td>
+                <td data-label="Time Stamp">{{ row[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <br><br>
-    <a href='/InventoryManager' class="button">Back</a>
-  </body>
+
+    <center>
+        <a href='/InventoryManager' class="button">Back</a>
+    </center>
+</body>
 </html>

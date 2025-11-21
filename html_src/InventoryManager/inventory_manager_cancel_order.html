@@ -1,17 +1,80 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Cancel Order</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="../styles.css">
-    </head>
-    <body>
-      <h2>Enter Order ID of the order to be cancelled</h2><br><br>
-        <form method="POST">
-            Order ID : <input type="text" name="OrderID" required><br><br>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Cancel Order</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* Only useful if multiple buttons side by side */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter Order ID of the order to be cancelled</h2>
+
+    <form method="POST">
+        <input type="text" name="OrderID" placeholder="Order ID" required><br>
+        <div class="form-buttons">
             <input type="submit" value="Submit" class="button">
-        </form>
-        <br><br>
-        <a href="/InventoryManager" class="button">Back</a>
-    </body>
+            <a href="/InventoryManager" class="button">Back</a>
+        </div>
+    </form>
+</body>
 </html>

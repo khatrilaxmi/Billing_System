@@ -1,36 +1,126 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Products</title>
-    <meta charset="utf-8">
     <link rel="stylesheet" href="../styles.css">
-  </head>
-  <body>
-    <h2>Product List</h2><br><br>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .button {
+              display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60; /* Main green */
+            border: none;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px #aaa;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #2ecc71;
+          transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+                  }
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 10px;
+                border-radius: 8px;
+                box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            }
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 10px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Product List</h2>
+
     <table>
-      <thead>
-        <tr>
-          <th>Product ID</th>
-          <th>Product Name</th>
-          <th>Description</th>
-          <th>Unit Price</th>
-          <th>Unit Type</th>
-          <th>Size</th>
-          <th>Color</th>
-          <th>Current Discount</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in products %}
-        <tr>
-          {% for d in row %}
-          <td>{{ d }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Unit Type</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>Current Discount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in products %}
+            <tr>
+                <td data-label="Product ID">{{ row[0] }}</td>
+                <td data-label="Product Name">{{ row[1] }}</td>
+                <td data-label="Description">{{ row[2] }}</td>
+                <td data-label="Unit Price">{{ row[3] }}</td>
+                <td data-label="Unit Type">{{ row[4] }}</td>
+                <td data-label="Size">{{ row[5] }}</td>
+                <td data-label="Color">{{ row[6] }}</td>
+                <td data-label="Current Discount">{{ row[7] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <br><br>
+
     <a href="/InventoryManager" class="button">Back</a>
-  </body>
+</body>
 </html>
