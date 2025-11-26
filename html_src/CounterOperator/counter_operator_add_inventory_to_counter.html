@@ -58,6 +58,7 @@
             gap: 20px; /* gap between Add and Back buttons */
             margin-top: 20px;
         }
+        
         .input-row {
            display: flex;
            align-items: center;
@@ -90,12 +91,21 @@
           <label for="ProductID">Product ID:</label>
           <input type="text" id="ProductID" name="ProductID" placeholder="e.g. KUR-001" required>
         </div>
+        
+        <div class="input-row">
+          <label for="Size">Size:</label>
+          <input type="text" id="Size" name="Size" placeholder="e.g. M" required>
+        </div>
+
+        <div class="input-row">
+          <label for="Color">Color:</label>
+          <input type="text" id="Color" name="Color" placeholder="e.g. Red" required>
+        </div>
 
         <div class="input-row">
           <label for="Quantity">Quantity:</label>
           <input type="text" id="Quantity" name="Quantity" placeholder="e.g. 5" required>
         </div>
-
 
         <div class="form-buttons">
             <input type="submit" class="button" value="Add">

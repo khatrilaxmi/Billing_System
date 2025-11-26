@@ -1,16 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Login</title>
+    <meta charset="UTF-8">
+    <title>Login - Shree Laxmi Collection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 2px 2px 6px #aaa;
+            width: 100%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #34495e;
+        }
+
+        input {
+            
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 6px #aaa;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+    </style>
 </head>
+
 <body>
-<h2>Shree Laxmi Collection - Login</h2>
-{% if error %}<div style="color:red">{{ error }}</div>{% endif %}
-<form method="post" action="/login">
-  <label>Username</label><input name="username" type="text" required /><br/>
-  <label>Password</label><input name="password" type="password" required /><br/>
-  <button type="submit">Login</button>
-</form>
+
+    <form method="post" action="/login" autocomplete="off">
+        {% if error %}
+           <div style="color:red; margin-bottom:10px;">{{ error }}</div>
+        {% endif %}
+        <label>Username</label>
+        <input type="text" name="username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required autocomplete="new-password">
+
+        <button type="submit">Login</button>
+    </form>
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 # CmsLib/PySql.py
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL 
 import yaml
 from MySQLdb import InterfaceError, OperationalError, ProgrammingError
 
@@ -19,8 +19,18 @@ class PySql:
 
     # ----------------- Cursor Management -----------------
     def init(self):
+        # Check if connection is alive
+        try:
+            if self.mysql.connection:
+                self.mysql.connection.ping(reconnect=True) # Reconnect if needed
+        except:
+            # Recreate connection object if ping fails
+            self.mysql_cursor = None
+
+        # Create cursor if it's None
         if self.mysql_cursor is None:
             self.mysql_cursor = self.mysql.connection.cursor()
+
 
     def deinit(self):
        try:
@@ -32,10 +42,16 @@ class PySql:
 
     # ----------------- Query Execution -----------------
     def run(self, sql_stmt, params=None):
-        self.init() 
+        
         try:
+            self.init() 
             self.mysql_cursor.execute(sql_stmt, params)
-        except (InterfaceError, OperationalError, ProgrammingError) as e:
+        except (InterfaceError, OperationalError) as e:
+            # Retry once after re-init
+            self.deinit()
+            self.init()
+            self.mysql_cursor.execute(sql_stmt, params)
+        except ProgrammingError as e:
             raise RuntimeError(f"MySQL query failed: {e}")
 
     def run_many(self, sql_stmt, params):

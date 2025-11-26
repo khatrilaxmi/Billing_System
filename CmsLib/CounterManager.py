@@ -12,37 +12,30 @@ class CounterManager:
         return any(keyword in product_name for keyword in keywords)
 
 
-    # ------------------- DIRECT LOGIN -------------------
-    @staticmethod
-    def login(username, password):
-        if username == "laxmi" and password == "laxmi123":
-            print("[INFO] Login successful.")
-            return True
-        else:
-            print("[ERROR] Invalid username or password.")
-            return False
-
     # ------------------- ADD COUNTER TO TOKEN -------------------
     @staticmethod
-    def __add_counter_to_token(pysql, token_id, product_name, quantity, size, color):
-        # Check if product is allowed
+    def __add_counter_to_token(pysql, token_id, product_id, quantity, size, color):
+
+        # Fetch name from ProductID for validation
+        sql = "SELECT Name FROM Products WHERE ProductID=%s AND Size=%s AND Color=%s"
+        pysql.run(sql, (product_id, size, color))
+        product_name = pysql.scalar_result
+
+        if not product_name:
+            return 3  # Product not found
+        
+
+        # Female product validation (using fetched name)
         if not CounterManager.__is_female_product(product_name):
             return 3  # Product not allowed
 
         # Token assigned check
-        token_assigned = TokenManager._TokenManager__is_token_assigned(pysql, token_id)
+        token_assigned = TokenManager.is_token_assigned(pysql, token_id)
         if not token_assigned:
             return 1
 
-        # Get product ID from name
-        sql = "SELECT ProductID FROM Products WHERE Name=%s AND Size=%s AND Color=%s"
-        pysql.run(sql, (product_name, size, color))
-        product_id = pysql.scalar_result
-        if not product_id:
-            return 3  # Product not found
-
         # Check displayed inventory
-        displayed_quantity, _ = InventoryManager._InventoryManager__get_displayed_quantity(pysql, product_id, size, color)
+        displayed_quantity, _ = InventoryManager.get_displayed_quantity(pysql, product_id, size, color)
         if quantity <= 0:
             return 2
         if displayed_quantity < quantity:
@@ -76,16 +69,19 @@ class CounterManager:
 
     # ------------------- ADD INVENTORY TO COUNTER -------------------
     @staticmethod
-    def __add_inventory_to_counter(pysql, product_name, quantity, size, color):
+    def __add_inventory_to_counter(pysql, product_id, quantity, size, color):
+
+         # Fetch name from ProductID for validation
+        sql = "SELECT Name FROM Products WHERE ProductID=%s AND Size=%s AND Color=%s"
+        pysql.run(sql, (product_id, size, color))
+        product_name = pysql.scalar_result
+
+        if not product_name:
+            return 2
+        
+        # Female product validation (using fetched name)
         if not CounterManager.__is_female_product(product_name):
             return 2  # Product not allowed
-
-        # Get ProductID
-        sql = "SELECT ProductID FROM Products WHERE Name=%s AND Size=%s AND Color=%s"
-        pysql.run(sql, (product_name, size, color))
-        product_id = pysql.scalar_result
-        if not product_id:
-            return 2
 
         stored_quantity = InventoryManager._InventoryManager__get_stored_quantity(pysql, product_id, size, color)
         if quantity <= 0:
@@ -105,15 +101,20 @@ class CounterManager:
 
     # ------------------- ADD TOKEN TO COUNTER -------------------
     @staticmethod
-    def __add_token_to_counter(pysql, token_id, product_name, size, color):
+    def __add_token_to_counter(pysql, token_id, product_id, size, color):
 
-        # Get ProductID
-        sql = "SELECT ProductID FROM Products WHERE Name=%s AND Size=%s AND Color=%s"
-        pysql.run(sql, (product_name, size, color))
-        product_id = pysql.scalar_result
-        if not product_id:
+        # Get ProductName
+        sql = "SELECT Name FROM Products WHERE ProductID=%s AND Size=%s AND Color=%s"
+        pysql.run(sql, (product_id, size, color))
+        product_name = pysql.scalar_result
+
+        if not product_name:
             return 1
-
+        
+        # Female product validation (using fetched name)
+        if not CounterManager.__is_female_product(product_name):
+            return 1  # Product not allowed
+      
         sql_stmt = """SELECT Quantity FROM TokensSelectProducts 
                       WHERE TokenID=%s AND ProductID=%s AND Size=%s AND Color=%s"""
         pysql.run(sql_stmt, (token_id, product_id, size, color))
@@ -137,16 +138,16 @@ class CounterManager:
 
     # ------------------- PUBLIC METHODS -------------------
     @staticmethod
-    def add_counter_to_token(pysql, token_id, product_name, quantity, size, color):
+    def add_counter_to_token(pysql, token_id, product_id, quantity, size, color):
         return pysql.run_transaction(CounterManager.__add_counter_to_token,
-                                     token_id, product_name, quantity, size, color)
+                                     token_id, product_id, quantity, size, color)
 
     @staticmethod
-    def add_inventory_to_counter(pysql, product_name, quantity, size, color):
+    def add_inventory_to_counter(pysql, product_id, quantity, size, color):
         return pysql.run_transaction(CounterManager.__add_inventory_to_counter,
-                                     product_name, quantity, size, color)
+                                     product_id, quantity, size, color)
 
     @staticmethod
-    def add_token_to_counter(pysql, token_id, product_name, size, color):
+    def add_token_to_counter(pysql, token_id, product_id, size, color):
         return pysql.run_transaction(CounterManager.__add_token_to_counter,
-                                     token_id, product_name, size, color)
+                                     token_id, product_id, size, color)

@@ -1,7 +1,6 @@
 # ProductManager.py
 # -------------------------------------------------
 # Fully updated for Shree Laxmi Collection
-# Handles products (female clothing) without GST
 # UnitType is always 'pcs'
 # Includes Size and Color
 # -------------------------------------------------
@@ -36,6 +35,13 @@ class ProductManager:
             VALUES (%s, %s, %s, %s, 'pcs', %s, %s, %s)
         """
         pysql.run(sql_stmt, (product_id, name, description, unit_price, size, color, discount or 0))
+
+        sql_stmt = """
+            INSERT INTO Inventory
+            (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
+            VALUES (%s, %s, %s, %s, %s,%s)
+        """
+        pysql.run(sql_stmt, (product_id, size, color, 0, 0, 5))
         return 0
 
     @staticmethod

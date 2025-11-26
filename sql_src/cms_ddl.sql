@@ -17,6 +17,7 @@
     DROP TABLE IF EXISTS InventoryTransactions;
     DROP TABLE IF EXISTS Orders;
     DROP TABLE IF EXISTS OrdersOfProducts;
+    DROP TABLE IF EXISTS Users;
 
     -- ============================================================
     -- Products Table
@@ -146,3 +147,14 @@
         CONSTRAINT ProductsInInvoices_FK1 FOREIGN KEY (InvoiceID) REFERENCES Invoices(InvoiceID),
         CONSTRAINT ProductsInInvoices_FK2 FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
     );
+
+      -- ============================================================
+    -- Users Table
+    -- ============================================================
+    CREATE TABLE IF NOT EXISTS Users (
+        UserID INT AUTO_INCREMENT PRIMARY KEY,
+        Username VARCHAR(50) UNIQUE NOT NULL,
+        PasswordHash VARCHAR(255) NOT NULL
+    
+    );
+    

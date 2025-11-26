@@ -1,52 +1,18 @@
 # py_src/app.py
 
 from flask import Flask, render_template, request, redirect, session, url_for
+from functools import wraps
 import sys
 import re
 import os
+import hashlib
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CmsLib import *
 
 app = Flask(__name__,
             template_folder='../html_src/',
             static_folder='../html_src/')
-
-# =========================
-# Login Configuration
-# =========================
-VALID_USERNAME = 'laxmi'
-VALID_PASSWORD = 'laxmi123'
-app.secret_key = "abc"
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        username = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
-        if username == VALID_USERNAME and password == VALID_PASSWORD:
-            session['logged_in'] = True
-            session['username'] = username
-            return redirect('/')
-        else:
-            error = 'Invalid credentials'
-    return render_template('/Login/login.html', error=error)
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
-
-@app.before_request
-def require_login():
-    allowed = set([url_for('login'), '/', '/login', '/favicon.ico'])
-    if request.path.startswith(app.static_url_path):
-        return None
-    if request.path in allowed:
-        return None
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-
+app.secret_key = "supersecretkey" #for session
 # =========================
 # Global Database Connection
 # =========================
@@ -55,19 +21,73 @@ pysql = PySql(app, yaml_path)
 
 # Global variable for invoices
 invoice_id_global = ""
+# =========================
+# Login Configuration
+# =========================
+
+# Login page
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username").strip()
+        password = request.form.get("password").strip()
+
+        if not username or not password:
+            error = "Please enter both username and password"
+            return render_template("login/login.html", error=error)
+        # Hash the entered password
+        password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+        # Query the database for this username
+        sql = "SELECT PasswordHash FROM Users WHERE Username=%s"
+        pysql.run(sql, (username,))
+        db_hash = pysql.scalar_result
+
+        if db_hash and db_hash == password_hash:
+            session["logged_in"] = True
+            session["username"] = username
+            return redirect(url_for("index"))
+        else:
+            error = "Invalid username or password"
+
+    return render_template("login/login.html", error=error)
+        
+
+# Decorator to protect routes
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
+
 
 # =========================
 # Index Page
 # =========================
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/")
+@login_required
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
+
+# @app.route('/', methods=['GET', 'POST'])
+#def index():
+ #   return render_template('index.html')
+ # Logout
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 
 # =========================
 # Inventory Manager
 # =========================
 @app.route('/InventoryManager', methods=['GET', 'POST'])
+@login_required
 def inventory_manager():
     options = ["AddProduct", "PlaceOrder", "ReceiveOrder", "CancelOrder",
                "ViewInventory", "ViewProducts", "OrderDetails",
@@ -133,6 +153,7 @@ def inventory_manager_view_inventory():
 # Token Manager
 # =========================
 @app.route('/TokenManager', methods=['GET', 'POST'])
+@login_required
 def token_manager():
     options = ["GetTokenStatuses", "GetToken", "ReturnToken", "GetTokenDetails", "AddToken", "RemoveToken"]
     if request.method == 'POST':
@@ -162,7 +183,7 @@ def token_manager_get_token():
 def token_manager_return_token():
     if request.method == 'POST':
         token_id = request.form['TokenID']
-        retval = TokenManager.put_token(pysql, token_id)
+        retval = TokenManager.return_token(pysql, token_id)
         if retval == 0:
             return render_template('/TokenManager/token_manager_success.html', result="Token returned successfully")
         return render_template('/TokenManager/token_manager_failure.html', reason="Cannot return token")
@@ -192,6 +213,7 @@ def token_manager_remove_token():
 # Counter Operator
 # =========================
 @app.route('/CounterOperator', methods=['GET', 'POST'])
+@login_required
 def counter_operator():
     options = ["AddProductsToToken", "AddInventoryToCounter", "AddTokenToCounter"]
     if request.method == 'POST':
@@ -231,6 +253,7 @@ def counter_add_inventory_to_counter():
             quantity = float(request.form['Quantity'].strip())
         except:
             return render_template('/CounterOperator/counter_operator_alert.html', result="Invalid quantity")
+        
         retval = CounterManager.add_inventory_to_counter(pysql, product_id, quantity, size, color)
         if retval == 0:
             return render_template('/CounterOperator/counter_operator_success.html', result="Products transferred successfully")
@@ -257,6 +280,7 @@ def counter_add_token_to_counter():
 # Bill Desk
 # =========================
 @app.route('/BillDesk', methods=['GET', 'POST'])
+@login_required
 def bill_desk():
     options = ["GenerateInvoice", "AdditionalDiscount", "ViewInvoice", "DateWiseInvoice"]
     if request.method == 'POST':

@@ -133,8 +133,8 @@ class InventoryManager:
               Inventory.StoredQuantity,
               Inventory.DisplayedQuantity,
               Inventory.StoreThreshold
-        FROM Inventory
-        JOIN Products ON Inventory.ProductID = Products.ProductID
+           FROM Inventory
+           JOIN Products ON Inventory.ProductID = Products.ProductID
         """
         pysql.run(sql_stmt)
         return pysql.result

@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from py_src.app import app        # Import your Flask app
 from CmsLib import *              # Import all CMS modules
+import hashlib
 
 # ============================================================
 # Shree Laxmi Collection Initialization Script
@@ -17,11 +18,33 @@ from CmsLib import *              # Import all CMS modules
 # ============================================================
 
 with app.app_context():
+
     # -----------------------------
-    # 1. Initialize PySql
+    # Initialize PySql
     # -----------------------------
     yaml_path = os.path.join(os.path.dirname(__file__), "../CmsLib/db.yaml")
     pysql = PySql(app, yaml_path)
+    # -----------------------------
+    # 1. Add admin user
+    # -----------------------------
+    username = "laxmi"
+    password = "laxmi123"
+    
+    # Hash the password
+    password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+    # Check if user already exists
+    sql_check = "SELECT COUNT(*) FROM Users WHERE Username=%s"
+    pysql.run(sql_check, (username,))
+    exists = pysql.scalar_result
+
+    if not exists:
+         sql_insert = "INSERT INTO Users (Username, PasswordHash) VALUES (%s, %s)"
+         pysql.run(sql_insert, (username, password_hash))
+         print(f"User '{username}' added successfully.")    
+    else:
+        print(f"User '{username}' already exists.")
+     
 
     # -----------------------------
     # 2. Add sample women's clothing products
@@ -36,7 +59,7 @@ with app.app_context():
         ("DRS-006", "Party Dress", "Elegant evening gown", 3500.00, "S", "Black", 0),
     ]
 
-    for pid, name, desc, price, unit_type, size, color, discount in products:
+    for pid, name, desc, price, size, color, discount in products:
         pid = pid.strip()
         ProductManager.add_product(pysql, pid, name, desc, price, size, color, discount=discount)
 
@@ -54,28 +77,37 @@ with app.app_context():
     ]
 
     for pid, size, color, stored, displayed, threshold in inventory_data:
-    # Check if inventory row exists
-     sql_check = "SELECT COUNT(*) FROM Inventory WHERE ProductID=%s AND Size=%s AND Color=%s"
-     pysql.run(sql_check, (pid, size, color))
-     exists = pysql.scalar_result
-     if exists:
-        # Update existing inventory
-        sql_update = """
-            UPDATE Inventory
-            SET StoredQuantity = StoredQuantity + %s,
-                DisplayedQuantity = DisplayedQuantity + %s,
-                StoreThreshold = %s
-            WHERE ProductID=%s AND Size=%s AND Color=%s
-        """
-        pysql.run(sql_update, (stored, displayed, threshold, pid, size, color))
-     else:
-        # Insert new inventory
-        sql_insert = """
-            INSERT INTO Inventory
-            (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
-            VALUES (%s,%s,%s,%s,%s,%s)
-        """
-        pysql.run(sql_insert, (pid, size, color, stored, displayed, threshold))
+        # 1️⃣ Check if product exists
+        sql_product_check = "SELECT COUNT(*) FROM Products WHERE ProductID=%s"
+        pysql.run(sql_product_check, (pid,))
+        product_exists = pysql.scalar_result
+
+        if not product_exists:
+           print(f"⚠️ Product {pid} does not exist in Products table. Skipping inventory insert.")
+           continue  # Skip this inventory entry
+        
+        # Check if inventory row exists
+        sql_check = "SELECT COUNT(*) FROM Inventory WHERE ProductID=%s AND Size=%s AND Color=%s"
+        pysql.run(sql_check, (pid, size, color))
+        exists = pysql.scalar_result
+        if exists:
+             # Update existing inventory
+             sql_update = """
+                UPDATE Inventory
+                SET StoredQuantity = %s,
+                  DisplayedQuantity = %s,
+                  StoreThreshold = %s
+             WHERE ProductID=%s AND Size=%s AND Color=%s
+             """
+             pysql.run(sql_update, (stored, displayed, threshold, pid, size, color))
+        else:
+            # Insert new inventory
+            sql_insert = """
+              INSERT INTO Inventory
+             (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
+             VALUES (%s,%s,%s,%s,%s,%s)
+             """
+            pysql.run(sql_insert, (pid, size, color, stored, displayed, threshold))
 
 
     # -----------------------------
@@ -124,14 +156,14 @@ with app.app_context():
     # -----------------------------
     # 9. Return tokens to pool
     # -----------------------------
-    TokenManager.put_token(pysql, tok1)
-    TokenManager.put_token(pysql, tok2)
+    TokenManager.return_token(pysql, tok1)
+    TokenManager.return_token(pysql, tok2)
 
     # -----------------------------
     # 10. Receive supplier order
     # -----------------------------
     OrderManager.receive_order(pysql, ord_id)
     print("Supplier order received successfully and stock updated.")
+    pysql.close()
+    print("\n✅ Shree Laxmi Collection setup completed successfully!")
 
-pysql.close()
-print("\n✅ Shree Laxmi Collection setup completed successfully!")

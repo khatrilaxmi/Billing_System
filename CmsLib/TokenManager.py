@@ -57,7 +57,7 @@ class TokenManager:
         return token_id
 
     @staticmethod
-    def __put_token(pysql, token_id):
+    def __return_token(pysql, token_id):
         has_products = TokenManager._TokenManager__token_has_products(pysql, token_id)
         is_assigned = TokenManager._TokenManager__is_token_assigned(pysql, token_id)
 
@@ -115,8 +115,8 @@ class TokenManager:
         return pysql.run_transaction(TokenManager.__get_token)
 
     @staticmethod
-    def put_token(pysql, token_id):
-        return pysql.run_transaction(TokenManager.__put_token, token_id)
+    def return_token(pysql, token_id):
+        return pysql.run_transaction(TokenManager.__return_token, token_id)
 
     @staticmethod
     def is_token_assigned(pysql, token_id):
