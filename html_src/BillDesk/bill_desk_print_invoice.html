@@ -147,32 +147,37 @@
     </div>
 
     <h1>Invoice Preview</h1>
-    <p style="text-align: center;"><strong>Women's Clothing Store</strong></p>
+    <p style="text-align: center;"><strong>Shree Laxmi Collection</strong></p>
     <p style="text-align: center;">Narephat, Kathmandu, Nepal</p>
     <br>
 
     <!-- Invoice Info -->
-    <h4>Invoice ID: {{ invoice_id }} &nbsp;&nbsp; Timestamp: {{ timestamp }}</h4><br>
-    <p><strong>Payment mode:</strong> {{ payment_mode }}</p><br>
+    <h4>Invoice ID:</h4> {{ invoice_header[0] }} &nbsp;&nbsp; <h4>Timestamp:</h4> {{ invoice_header[1] }}<br>
+    <p><strong>Payment mode:</strong> {{ invoice_header[4] }}</p><br>
 
     <!-- Products Table -->
     <table>
         <thead>
             <tr>
                 <th>Product</th>
-                <th>Color</th>
                 <th>Size</th>
+                <th>Color</th>
                 <th>Quantity</th>
                 <th>Rate</th>
                 <th>Total Amount</th>
+                <th>Discount</th>
             </tr>
         </thead>
         <tbody>
-            {% for row in invoice %}
+            {% for row in invoice_products %}
             <tr>
-                {% for d in row %}
-                <td>{{ d }}</td>
-                {% endfor %}
+                <td>{{ row[1] }}</td> <!-- Name -->
+                <td>{{ row[2] }}</td> <!-- Size -->
+                <td>{{ row[3] }}</td> <!-- Color -->
+                <td>{{ row[4] }}</td> <!-- Quantity -->
+                <td>{{ row[5] }}</td> <!-- Rate -->
+                <td>{{  "%.3f"|format(row[4] *row[5]) }}</td> <!-- Total Amount -->
+                <td>{{ row[7] }}%</td> <!-- Discount-->
             </tr>
             {% endfor %}
         </tbody>
@@ -180,10 +185,11 @@
     <br>
 
     <!-- Invoice Totals -->
-    <pre><h3>Total      :</h3> {{ _total }}</pre>
-    <pre><h3>Discount given :</h3> {{ discount_given }}</pre>
-    <pre><h3>Bill Amount :</h3> {{ invoice_total - discount_given }}</pre>
-    <br>
+    <div style="text-align: center; margin-top: 20px;">
+       <h4 style="margin: 10px, 0;">Total Discount :</h4> {{ invoice_header[3] }}<br>
+       <h4 style="margin: 10px, 0;">VAT (13%) :</h4> {{ invoice_products | sum(attribute=6) }}<br>
+       <h4 style="margin: 10px, 0;">Bill Amount :</h4> {{ invoice_header[2] }}
+    </div>
 
     <!-- Footer Note -->
     <p class="footer-note">

@@ -1,83 +1,160 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - Shree Laxmi Collection</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        form {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 2px 2px 6px #aaa;
-            width: 100%;
-            max-width: 350px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-weight: bold;
-            margin-top: 15px;
-            color: #34495e;
-        }
-
-        input {
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login - Shree Laxmi Collection</title>
+        <style>
             
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-        }
+            * {
+            box-sizing: border-box;
+            }
 
-        button {
-            margin-top: 20px;
-            padding: 12px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 2px 2px 6px #aaa;
-        }
+            body {
+                font-family: 'Arial', sans-serif;
+                background: #f9f9f9;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                padding: 20px;
+            }
 
-        button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-3px);
-            box-shadow: 3px 3px 8px #888;
-        }
+            form {
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 2px 2px 6px #aaa;
+                width: 150%;
+                max-width: 400px;
+                display: flex;
+                flex-direction: column;
+            }
 
-    </style>
-</head>
+            label {
+                font-weight: bold;
+                margin-top: 15px;
+                color: #34495e;
+            }
 
-<body>
+            input {
+                
+                padding: 11px;
+                margin-top: 5px;
+                border-radius: 10px;
+                border: 1px solid #ccc;
+                font-size: 1rem;
+            }
 
-    <form method="post" action="/login" autocomplete="off">
-        {% if error %}
-           <div style="color:red; margin-bottom:10px;">{{ error }}</div>
-        {% endif %}
-        <label>Username</label>
-        <input type="text" name="username" required>
+            button {
+                margin-top: 20px;
+                padding: 12px;
+                width: 100%;
+                border: none;
+                font-size: 1.1rem;
+                font-weight: bold;
+                border-radius: 40px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 2px 2px 6px #aaa;
+            }
 
-        <label>Password</label>
-        <input type="password" name="password" required autocomplete="new-password">
+            .login-btn {
+                background-color: #27ae60;
+                color: white;
+            }
 
-        <button type="submit">Login</button>
-    </form>
+            .login-btn:hover {
+                background-color: #2ecc71;
+                transform: translateY(-3px);
+                box-shadow: 3px 3px 8px #888;
+            }
 
-</body>
-</html>
+            .register-btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+                margin-top: 5px; /* Close to OR line */
+                border-radius: 40px;
+                border: 1px solid #27ae60;
+                background-color: white;
+                color: #27ae60;
+                font-size: 1.1rem;
+                font-weight: bold;
+                text-decoration: none;
+                box-shadow: 2px 2px 6px #aaa;
+                transition: all 0.3s ease;
+            }
+
+            .register-btn:hover {
+                background-color: #f0f0f0;
+                transform: translateY(-3px);
+                box-shadow: 3px 3px 8px #888;
+            }
+
+            .forgot-password {
+                align-self: flex-start;
+                margin-top: 10px;
+                font-size: 0.9rem;
+                text-decoration: none;
+                color: #34495e;
+                transition: 0.3s;
+            }
+
+            .forgot-password:hover {
+                text-decoration: underline;
+            }
+
+            .or-container {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                margin: 20px 0;
+            }
+
+            .or-container .line {
+                flex: 1;
+                height: 1px;
+                background-color: #ccc;
+            }
+
+            .or-container .or-text {
+                margin: 0 10px;
+                font-size: 0.95rem;
+                color: #888;
+                white-space: nowrap;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <form method="post" action="/login" autocomplete="off">
+            {% if error %}
+            <div style="color:red; margin-bottom:10px;">{{ error }}</div>
+            {% endif %}
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required autocomplete="new-password">
+
+            <a href="/forgot_password" class="forgot-password">Forgot Password?</a>
+
+            <button type="submit" class="login-btn">Login</button>
+
+            <div class="or-container">
+                <div class="line"></div>
+                <div class="or-text">or</div>
+                <div class="line"></div>
+            </div>
+
+            <a href="/register" class="register-btn">Register</a>
+
+
+        </form>
+
+    </body>
+    </html>

@@ -114,6 +114,7 @@ with app.app_context():
     # 4. Generate tokens
     # -----------------------------
     # Remove old tokens
+    pysql.run("DELETE FROM TokensSelectProducts")
     pysql.run("DELETE FROM Tokens")
     
     token_ids = [("TOK-" + format(i, "02d"),) for i in range(20)]

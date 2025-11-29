@@ -21,10 +21,12 @@ class InventoryManager:
     @staticmethod
     def __get_displayed_quantity(pysql, product_id, size, color):
         sql_stmt = """
-            SELECT `DisplayedQuantity`, `UnitType`
-            FROM `Inventory`
-            JOIN `Products` USING (`ProductID`)
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            SELECT Inventory.DisplayedQuantity, Products.UnitType
+            FROM Inventory
+            JOIN Products ON Inventory.ProductID = Products.ProductID
+                        AND Inventory.Size = Products.Size
+                        AND Inventory.Color = Products.Color
+            WHERE Inventory.ProductID = %s AND Inventory.Size = %s AND Inventory.Color = %s
         """
         pysql.run(sql_stmt, (product_id, size, color))
         result = pysql.first_result
@@ -33,10 +35,12 @@ class InventoryManager:
     @staticmethod
     def __get_stored_quantity(pysql, product_id, size, color):
         sql_stmt = """
-            SELECT `StoredQuantity`, `UnitType`
-            FROM `Inventory`
-            JOIN `Products` USING (`ProductID`)
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            SELECT Inventory.StoredQuantity, Products.UnitType
+            FROM Inventory
+            JOIN Products ON Inventory.ProductID = Products.ProductID
+                         AND Inventory.Size = Products.Size
+                         AND Inventory.Color = Products.Color
+            WHERE Inventory.ProductID = %s AND Inventory.Size = %s AND Inventory.Color = %s
         """
         pysql.run(sql_stmt, (product_id, size, color))
         result = pysql.first_result
@@ -45,9 +49,9 @@ class InventoryManager:
     @staticmethod
     def __is_below_threshold(pysql, product_id, size, color):
         sql_stmt = """
-            SELECT `StoredQuantity` <= `StoreThreshold`
-            FROM `Inventory`
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            SELECT StoredQuantity <= StoreThreshold
+            FROM Inventory
+            WHERE ProductID = %s AND Size = %s AND Color = %s
         """
         pysql.run(sql_stmt, (product_id, size, color))
         return pysql.scalar_result
@@ -56,8 +60,8 @@ class InventoryManager:
     def __inventory_has_product(pysql, product_id, size, color):
         sql_stmt = """
             SELECT COUNT(*)
-            FROM `Inventory`
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            FROM Inventory
+            WHERE ProductID = %s AND Size = %s AND Color = %s
         """
         pysql.run(sql_stmt, (product_id, size, color))
         return pysql.scalar_result
@@ -70,9 +74,9 @@ class InventoryManager:
         if not has_product:
             return 2
         sql_stmt = """
-            UPDATE `Inventory`
-            SET `StoreThreshold` = %s
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            UPDATE Inventory
+            SET StoreThreshold = %s
+            WHERE ProductID = %s AND Size = %s AND Color = %s
         """
         pysql.run(sql_stmt, (threshold, product_id, size, color))
         return 0
@@ -85,9 +89,9 @@ class InventoryManager:
         if not has_product:
             return 2
         sql_stmt = """
-            UPDATE `Inventory`
-            SET `StoredQuantity` = `StoredQuantity` - %s
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s
+            UPDATE Inventory
+            SET StoredQuantity = StoredQuantity - %s
+            WHERE ProductID = %s AND Size = %s AND Color = %s
         """
         pysql.run(sql_stmt, (quantity, product_id, size, color))
         InventoryManager.__log_transaction(pysql, "INVENTORY_SUB", product_id, size, color, quantity)
@@ -98,7 +102,7 @@ class InventoryManager:
         global next_transaction_id, next_transaction_id_read
 
         if not next_transaction_id_read:
-            sql_stmt = "SELECT COUNT(*) FROM `InventoryTransactions`"
+            sql_stmt = "SELECT COUNT(*) FROM InventoryTransactions"
             pysql.run(sql_stmt)
             next_transaction_id = pysql.scalar_result
             next_transaction_id_read = 1
@@ -114,8 +118,8 @@ class InventoryManager:
 
         transaction_id = "TRC-" + format(next_transaction_id, "010d")
         sql_stmt = """
-            INSERT INTO `InventoryTransactions`
-            (`TransactionID`, `TransactionType`, `ProductID`, `Size`, `Color`, `Quantity`, `Timestamp`)
+            INSERT INTO InventoryTransactions
+            (TransactionID, TransactionType, ProductID, Size, Color, Quantity, Timestamp)
             VALUES (%s, %s, %s, %s, %s, %s, (SELECT CURRENT_TIMESTAMP))
         """
         pysql.run(sql_stmt, (transaction_id, transaction_type, product_id, size, color, quantity))
@@ -135,6 +139,8 @@ class InventoryManager:
               Inventory.StoreThreshold
            FROM Inventory
            JOIN Products ON Inventory.ProductID = Products.ProductID
+                        AND Inventory.Size = Products.Size
+                        AND Inventory.Color = Products.Color
         """
         pysql.run(sql_stmt)
         return pysql.result
@@ -142,10 +148,20 @@ class InventoryManager:
     @staticmethod
     def __get_transactions(pysql):
         sql_stmt = """
-            SELECT `TransactionID`, `ProductID`, `Name`, `Size`, `Color`, 
-                   `TransactionType`, `Quantity`, `UnitType`, `Timestamp`
-            FROM `InventoryTransactions`
-            JOIN `Products` USING (`ProductID`)
+            SELECT
+              InventoryTransactions.TransactionID, 
+              InventoryTransactions.ProductID, 
+              Products.Name, 
+              InventoryTransactions.Size, 
+              InventoryTransactions.Color, 
+              InventoryTransactions.TransactionType, 
+              InventoryTransactions.Quantity, 
+              Products.UnitType, 
+              InventoryTransactions.Timestamp
+            FROM InventoryTransactions
+            JOIN Products ON InventoryTransactions.ProductID = Products.ProductID
+                        AND InventoryTransactions.Size = Products.Size
+                        AND InventoryTransactions.Color = Products.Color
         """
         pysql.run(sql_stmt)
         return pysql.result
@@ -153,11 +169,21 @@ class InventoryManager:
     @staticmethod
     def __get_transactions_by_date(pysql, date):
         sql_stmt = """
-            SELECT `TransactionID`, `ProductID`, `Name`, `Size`, `Color`, 
-                   `TransactionType`, `Quantity`, `UnitType`, TIME(`Timestamp`)
-            FROM `InventoryTransactions`
-            JOIN `Products` USING (`ProductID`)
-            WHERE DATE(`Timestamp`) = %s
+            SELECT
+              InventoryTransactions.TransactionID, 
+              InventoryTransactions.ProductID, 
+              Products.Name, 
+              InventoryTransactions.Size, 
+              InventoryTransactions.Color, 
+              InventoryTransactions.TransactionType, 
+              InventoryTransactions.Quantity, 
+              Products.UnitType, 
+              TIME(InventoryTransactions.Timestamp)
+            FROM InventoryTransactions
+            JOIN Products ON InventoryTransactions.ProductID = Products.ProductID
+                        AND InventoryTransactions.Size = Products.Size
+                        AND InventoryTransactions.Color = Products.Color
+            WHERE DATE(InventoryTransactions.Timestamp) = %s
         """
         pysql.run(sql_stmt, (date,))
         return pysql.result
@@ -165,15 +191,23 @@ class InventoryManager:
     @staticmethod
     def __get_transactions_of_product_by_date(pysql, product_id, size, color, date):
         sql_stmt = """
-            SELECT `TransactionID`, `TransactionType`, `Quantity`, `UnitType`, TIME(`Timestamp`)
-            FROM `InventoryTransactions`
-            JOIN `Products` USING (`ProductID`)
-            WHERE `ProductID` = %s AND `Size` = %s AND `Color` = %s AND DATE(`Timestamp`) = %s
+            SELECT 
+              InventoryTransactions.TransactionID, 
+              InventoryTransactions.TransactionType, 
+              InventoryTransactions.Quantity, 
+              Products.UnitType, 
+              TIME(InventoryTransactions.Timestamp)
+            FROM InventoryTransactions
+            JOIN Products ON InventoryTransactions.ProductID = Products.ProductID
+                        AND InventoryTransactions.Size = Products.Size
+                        AND InventoryTransactions.Color = Products.Color
+            WHERE InventoryTransactions.ProductID = %s AND InventoryTransactions.Size = %s AND InventoryTransactions.Color = %s AND DATE(InventoryTransactions.Timestamp) = %s
         """
         pysql.run(sql_stmt, (product_id, size, color, date))
         return pysql.result
 
-    # ---------- PUBLIC WRAPPERS ----------
+    # ---------- PUBLIC WRAPPERS ---------- 
+
     @staticmethod
     def get_displayed_quantity(pysql, product_id, size, color):
         return pysql.run_transaction(InventoryManager.__get_displayed_quantity, product_id, size, color, commit=False)

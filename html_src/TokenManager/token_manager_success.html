@@ -1,82 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Success</title>
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../svg-icons-animate.css"/>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            text-align: center;
-            padding: 50px 20px;
-        }
+<meta charset="UTF-8">
+<title>Success</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        text-align: center;
+        padding-top: 80px;
+    }
 
-        .svg-box {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 30px;
-            position: relative;
-        }
+    .success-container {
+        display: inline-block;
+        text-align: center;
+    }
 
-        svg.circular {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+    /* Circle */
+    .success-circle {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        margin: 0 auto 20px auto;
+    }
 
-        svg.checkmark {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
+    .success-circle:before {
+        content: '';
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 4px solid #2ecc71; /* faded green circle */
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        animation: popIn 0.4s ease-out;
+    }
 
-        h2 {
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 30px;
-        }
+    /* Checkmark */
+    .checkmark {
+        width: 20px;
+        height: 10px;
+        border-left: 4px solid #2ecc71;
+        border-bottom: 4px solid #2ecc71;
+        transform: rotate(-45deg);
+        position: absolute;
+        top: 16px;
+        left: 14px;
+        animation: drawCheck 0.4s ease-out 0.3s backwards;
+    }
 
-        .button {
-            display: inline-block;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: white;
-            background-color: #27ae60;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 2px 2px 6px #aaa;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
+    @keyframes drawCheck {
+        0% {
+            opacity: 0;
+            transform: scale(0) rotate(-45deg);
         }
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(-45deg);
+        }
+    }
 
-        .button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-2px);
-            box-shadow: 3px 3px 8px #888;
-        }
-    </style>
+    @keyframes popIn {
+        0% { transform: scale(0); }
+        80% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    h2 {
+        color: #333;
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        background-color: #27ae60;
+        border-radius: 8px;
+        text-decoration: none;
+        box-shadow: 2px 2px 6px #aaa;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #2ecc71;
+    }
+</style>
 </head>
 <body>
-    <div class="svg-box">
-        <svg class="circular green-stroke">
-            <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-        </svg>
-        <svg class="checkmark green-stroke">
-            <g transform="matrix(0.79961,0,0,0.79961,-489.57,-205.679)">
-                <path class="checkmark__check" fill="none" d="M616.306,283.025L634.087,300.805L673.361,261.53"/>
-            </g>
-        </svg>
+
+<div class="success-container">
+    <div class="success-circle">
+        <div class="checkmark"></div>
     </div>
 
     <h2>{{ result }}</h2>
     <a href='/TokenManager' class="button">Back</a>
+</div>
+
 </body>
 </html>

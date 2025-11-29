@@ -304,6 +304,50 @@ def generate_invoice():
         return render_template('/BillDesk/bill_desk_failure.html', reason="Error generating invoice")
     return render_template('/BillDesk/bill_desk_generate_invoice.html', tokens=tokens)
 
+# View Invoice Details
+@app.route('/BillDesk/ViewInvoice', methods=['GET', 'POST'])
+@login_required
+def view_invoice():
+    if request.method == 'POST':
+        invoice_id = request.form['InvoiceID'].strip()
+
+        # Get invoice header and product details from InvoiceManager
+        invoice_header, invoice_products = InvoiceManager.get_invoice_details(pysql, invoice_id)
+
+        if not invoice_header:
+            return render_template('/BillDesk/bill_desk_failure.html', reason=f"Invoice {invoice_id} not found")
+
+        return render_template(
+            '/BillDesk/bill_desk_view_invoice_details_result.html',
+            invoice_products = invoice_products,
+            invoice_header = invoice_header
+        )
+
+    # GET request: show input form
+    return render_template('/BillDesk/bill_desk_view_invoice_details.html')
+
+@app.route('/BillDesk/PrintInvoiceCopy', methods=['GET'])
+@login_required
+def print_invoice_copy():
+    # Get invoice ID from query string
+    invoice_id = request.args.get('InvoiceID')
+    if not invoice_id:
+        return render_template('/BillDesk/bill_desk_failure.html', reason=f"InvoiceID required")
+
+    # Fetch invoice header and products
+    invoice_header, invoice_products = InvoiceManager.get_invoice_details(pysql, invoice_id)
+
+    if not invoice_header or not invoice_products:
+        return render_template('/BillDesk/bill_desk_failure.html', reason=f"Invoice {invoice_id} not found")
+
+    # Render the printable invoice template
+    return render_template(
+        '/BillDesk/bill_desk_print_invoice.html',
+        invoice_header=invoice_header,
+        invoice_products=invoice_products
+    )
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

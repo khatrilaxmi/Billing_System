@@ -1,74 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Alert</title>
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" type="text/css" href="../svg-icons-animate.css"/>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            text-align: center;
-            margin: 40px;
-        }
+<meta charset="UTF-8">
+<title>Alert</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        text-align: center;
+        padding-top: 80px;
+    }
 
-        h2 {
-            color: #333;
-            font-size: 2rem;
-            margin: 20px 0 40px 0;
-            text-shadow: 1px 1px 2px #aaa;
-        }
+    .alert-container {
+        display: inline-block;
+        text-align: center;
+    }
 
-        .svg-box {
-            display: inline-block;
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin-bottom: 20px;
-        }
+    .alert-circle {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        margin: 0 auto 20px auto;
+    }
 
-        .button {
-            display: inline-block;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-            color: white;
-            background-color: #27ae60; /* Green button */
-            border: none;
-            border-radius: 10px;
-            box-shadow: 2px 2px 6px #aaa;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
+    /* Circle color same as exclamation mark */
+    .alert-circle:before {
+        content: '';
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 4px solid #f1c40f; /* bright yellow */
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        animation: popIn 0.4s ease-out;
+    }
 
-        .button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-2px);
-            box-shadow: 3px 3px 8px #888;
-        }
-    </style>
+    .alert-mark {
+        width: 4px;
+        height: 20px;
+        background-color: #f1c40f; /* bright yellow */
+        position: absolute;
+        top: 8px;
+        left: 23px;
+        border-radius: 2px;
+        animation: drawAlert 0.4s ease-out 0.3s backwards;
+    }
+
+    .alert-dot {
+        width: 4px;
+        height: 4px;
+        background-color: #f1c40f;
+        position: absolute;
+        bottom: 8px;
+        left: 23px;
+        border-radius: 50%;
+        animation: drawAlert 0.4s ease-out 0.5s backwards;
+    }
+
+    @keyframes drawAlert {
+        0% { opacity: 0; transform: scale(0); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0); }
+        80% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    h2 {
+        color: #333;
+        font-size: 2rem;
+        margin-top: 10px;
+        margin-bottom: 30px;
+    }
+
+    /* Back button in yellow */
+    .button {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: white;
+        background-color: #f1c40f; /* yellow button */
+        border-radius: 8px;
+        text-decoration: none;
+        box-shadow: 2px 2px 6px #aaa;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #f4d03f; /* slightly brighter yellow on hover */
+    }
+</style>
 </head>
 <body>
-    <div class="svg-box">
-        <svg class="circular yellow-stroke">
-            <circle class="path" cx="75" cy="75" r="50" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-        </svg>
-        <svg class="alert-sign yellow-stroke">
-            <g transform="matrix(1,0,0,1,-615.516,-257.346)">
-                <g transform="matrix(0.56541,-0.56541,0.56541,0.56541,93.7153,495.69)">
-                    <path class="line" d="M634.087,300.805L673.361,261.53" fill="none"/>
-                </g>
-                <g transform="matrix(2.27612,-2.46519e-32,0,2.27612,-792.339,-404.147)">
-                    <circle class="dot" cx="621.52" cy="316.126" r="1.318"/>
-                </g>
-            </g>
-        </svg>
+
+<div class="alert-container">
+    <div class="alert-circle">
+        <div class="alert-mark"></div>
+        <div class="alert-dot"></div>
     </div>
 
     <h2>{{ result }}</h2>
+
     <a href='/TokenManager' class="button">Back</a>
+</div>
+
 </body>
 </html>

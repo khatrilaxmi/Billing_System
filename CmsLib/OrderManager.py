@@ -30,26 +30,30 @@ class OrderManager:
             next_order_id = pysql.scalar_result
             next_order_id_read = 1
 
-        # Validate products
+        # Validate products and merge duplicates
+        merged_products = {}
         for product_id, size, color, quantity in products_quantities:
-            if not ProductManager._ProductManager__product_exists(pysql, product_id):
+            if not ProductManager._ProductManager__product_exists(pysql, size, color, product_id):
                 return 1  # Product not found
-            if quantity <= 0:
+            if Decimal(quantity) <= 0:
                 return 2  # Invalid quantity
+            key = (product_id, size, color)
+            merged_products[key] = merged_products.get(key, Decimal("0")) + Decimal(quantity)
 
         # Create order ID
         order_id = "ORD-" + format(next_order_id, "010d")
 
         # Insert order
         pysql.run(
-            "INSERT INTO Orders (OrderID, OrderDate) VALUES (%s, (SELECT CURRENT_TIMESTAMP))",
+            "INSERT INTO Orders (OrderID, OrderDate) VALUES (%s, (CURRENT_TIMESTAMP))",
             (order_id,)
         )
 
         # Insert order products
+        order_rows = [(order_id, pid, size, color, qty) for (pid, size, color), qty in merged_products.items()]
         pysql.run_many(
             "INSERT INTO OrdersOfProducts (OrderID, ProductID, Size, Color, Quantity) VALUES (%s,%s,%s,%s,%s)",
-            [(order_id, pid, sz, col, qty) for pid, sz, col, qty in products_quantities]
+            order_rows
         )
 
         next_order_id += 1
@@ -59,15 +63,20 @@ class OrderManager:
     def __get_order_status(pysql, order_id):
         pysql.run("SELECT Delivered, Cancelled FROM Orders WHERE OrderID = %s", (order_id,))
         status = pysql.first_result
-        if not status:
-            return (1, 1)  # Order not found
-        return status
+        if status is None:
+            return None  # Order not found
+        # Ensure returned values are integers or booleans
+        delivered, cancelled = status
+        return bool(delivered), bool(cancelled)
 
     @staticmethod
     def __cancel_order(pysql, order_id):
-        delivered, cancelled = OrderManager._OrderManager__get_order_status(pysql, order_id)
+        status = OrderManager._OrderManager__get_order_status(pysql, order_id)
+        if status is None:
+            return 4 # order not found
+        delivered, cancelled = status
         if delivered and cancelled:
-            return 1  # Already delivered & cancelled (invalid)
+            return 1 # Already delivered & cancelled (invalid)
         if delivered:
             return 2  # Already delivered
         if cancelled:
@@ -78,9 +87,12 @@ class OrderManager:
 
     @staticmethod
     def __receive_order(pysql, order_id):
-        delivered, cancelled = OrderManager._OrderManager__get_order_status(pysql, order_id)
+        status = OrderManager._OrderManager__get_order_status(pysql, order_id)
+        if status is None:
+            return 4
+        delivered, cancelled = status
         if delivered and cancelled:
-            return 1
+            return 1 # Already delivered & cancelled (invalid)
         if delivered:
             return 2
         if cancelled:
@@ -101,17 +113,20 @@ class OrderManager:
             )
             exists = pysql.scalar_result
 
+            threshold_value = max(1, round(quantity * Decimal("0.1")))
+
             if exists:
                 # Update stored quantity
                 pysql.run(
                     "UPDATE Inventory SET StoredQuantity = StoredQuantity + %s WHERE ProductID=%s AND Size=%s AND Color=%s",
                     (quantity, product_id, size, color)
                 )
+                
             else:
                 # Insert new inventory row
                 pysql.run(
                     "INSERT INTO Inventory (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold) VALUES (%s,%s,%s,%s,%s,%s)",
-                    (product_id, size, color, quantity, 0, quantity * Decimal("0.1"))
+                    (product_id, size, color, quantity, 0, threshold_value)
                 )
 
             # Log transaction
@@ -132,11 +147,13 @@ class OrderManager:
         order_status = pysql.first_result
 
         pysql.run(
-            "SELECT OrdersOfProducts.ProductID, Products.Name, OrdersOfProducts.Size, OrdersOfProducts.Color, OrdersOfProducts.Quantity, Products.UnitType "
-            "FROM OrdersOfProducts JOIN Products USING (ProductID) "
-            "WHERE OrderID = %s",
-            (order_id,)
-        )
+                "SELECT O.ProductID, P.Name, O.Size, O.Color, O.Quantity, P.UnitType "
+                "FROM OrdersOfProducts O "
+                "JOIN Products P ON O.ProductID = P.ProductID AND O.Size = P.Size AND O.Color = P.Color "
+                "WHERE O.OrderID = %s",
+              (order_id,)
+          )
+
         order_details = pysql.result
         return order_status, order_details
 

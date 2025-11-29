@@ -9,7 +9,7 @@ class CounterManager:
     def __is_female_product(product_name):
         keywords = ["Kurti", "Saree", "Top", "Skirt", "Dress", "Jacket", "Sari", 
                     "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women"]
-        return any(keyword in product_name for keyword in keywords)
+        return any(keyword.lower() in product_name.lower() for keyword in keywords)
 
 
     # ------------------- ADD COUNTER TO TOKEN -------------------
@@ -27,7 +27,7 @@ class CounterManager:
 
         # Female product validation (using fetched name)
         if not CounterManager.__is_female_product(product_name):
-            return 3  # Product not allowed
+            return 5  # Product not allowed
 
         # Token assigned check
         token_assigned = TokenManager.is_token_assigned(pysql, token_id)
@@ -36,6 +36,10 @@ class CounterManager:
 
         # Check displayed inventory
         displayed_quantity, _ = InventoryManager.get_displayed_quantity(pysql, product_id, size, color)
+        # Ensure it is a number
+        if isinstance(displayed_quantity, tuple):
+            displayed_quantity = displayed_quantity[0]
+
         if quantity <= 0:
             return 2
         if displayed_quantity < quantity:
@@ -84,6 +88,10 @@ class CounterManager:
             return 2  # Product not allowed
 
         stored_quantity = InventoryManager._InventoryManager__get_stored_quantity(pysql, product_id, size, color)
+        # Ensure it is a number
+        if isinstance(stored_quantity, tuple):
+            stored_quantity = stored_quantity[0]
+
         if quantity <= 0:
             return 1
         if stored_quantity < quantity:
@@ -118,7 +126,12 @@ class CounterManager:
         sql_stmt = """SELECT Quantity FROM TokensSelectProducts 
                       WHERE TokenID=%s AND ProductID=%s AND Size=%s AND Color=%s"""
         pysql.run(sql_stmt, (token_id, product_id, size, color))
+
         quantity = pysql.scalar_result
+
+        if isinstance(quantity, tuple):
+            quantity = quantity[0]
+
         if not quantity:
             return 1
 
