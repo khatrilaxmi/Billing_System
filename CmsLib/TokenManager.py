@@ -10,7 +10,7 @@ class TokenManager:
 
     @staticmethod
     def __add_token(pysql):
-        sql_stmt = "SELECT `TokenID` FROM `Tokens`"
+        sql_stmt = "SELECT `TokenID` FROM `Tokens` ORDER BY `TokenID` ASC"
         pysql.run(sql_stmt)
         tokens = [int(token[0][4:]) for token in pysql.result]
 

@@ -5,24 +5,39 @@
 # Includes Size and Color
 # -------------------------------------------------
 
+import re
+
+
 class ProductManager:
 
     # ---------- PRIVATE METHODS ----------
+    @staticmethod
+    def __is_female_product(product_name):
+        keywords = ["Kurthi", "Kurti", "Saree", "Top", "Skirt", "Dress", "Jacket", "Sari",
+                    "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women", "Girls", "Lekhenga"]
+        product = product_name.lower()
+        return any(re.search(rf"\b{kw}\b", product, flags=re.IGNORECASE) for kw in keywords)
 
     @staticmethod
-    def __add_product(pysql, product_id, name, description, unit_price, size, color, discount=None):
+    def __add_product(pysql, product_id, name, description, unit_price, size, color, entered_quantity, discount=None):
         """
-        Adds a new product with size and color.
-        unit_price: price per piece
-        discount: optional discount in percentage
+         Adds a new product with size and color.
+         Rejects any product name that is not female.
         """
+        
         # Check if product exists
         if ProductManager._ProductManager__product_exists(pysql, product_id, size, color):
-            return 1
-
+            return 1 #productID or Size/Color duplicate
+        
+        # Check if product is female
+        if not ProductManager.__is_female_product(name):
+            return 4  # Product not allowed
+        
         # Check if price is positive
         if unit_price <= 0:
             return 2
+        if entered_quantity <= 0:
+            return 5
 
         # Check discount
         if discount is not None and discount < 0:
@@ -36,20 +51,27 @@ class ProductManager:
         """
         pysql.run(sql_stmt, (product_id, name, description, unit_price, size, color, discount or 0))
 
+        # Initialize inventory
+        print("Entered Quantity:", entered_quantity)
+        stored_qty = round(entered_quantity * 0.60)
+        display_qty = entered_quantity - stored_qty
+
+        print("Stored Quantity:", stored_qty, "Display Quantity:", display_qty )
+
         sql_stmt = """
             INSERT INTO Inventory
             (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
             VALUES (%s, %s, %s, %s, %s, %s)
         """
-        pysql.run(sql_stmt, (product_id, size, color, 0, 0, 5))
+        pysql.run(sql_stmt, (product_id, size, color, stored_qty, display_qty, 5))
         return 0
 
     @staticmethod
     def __update_product_discount(pysql, product_id, size, color, discount):
         if not ProductManager._ProductManager__product_exists(pysql, product_id, size, color):
-            return 1
+            return 1 #productID or Size/Color duplicate
         if discount < 0:
-            return 2
+            return 3
 
         sql_stmt = "UPDATE Products SET CurrentDiscount = %s WHERE ProductID = %s AND Size = %s AND Color = %s"
         pysql.run(sql_stmt, (discount, product_id, size, color))
@@ -81,6 +103,7 @@ class ProductManager:
         pysql.run(sql_stmt, (product_id, size, color))
         return pysql.scalar_result
 
+
     @staticmethod
     def __get_all_products(pysql):
         sql_stmt = "SELECT * FROM Products"
@@ -96,9 +119,9 @@ class ProductManager:
     # ---------- PUBLIC WRAPPERS ----------
 
     @staticmethod
-    def add_product(pysql, product_id, name, description, unit_price, size, color, discount=None):
+    def add_product(pysql, product_id, name, description, unit_price, size, color, entered_quantity, discount=None):
         return pysql.run_transaction(
-            ProductManager.__add_product, product_id, name, description, unit_price, size, color, discount
+            ProductManager.__add_product, product_id, name, description, unit_price, size, color, entered_quantity, discount
         )
 
     @staticmethod

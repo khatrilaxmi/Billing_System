@@ -30,15 +30,15 @@ class OrderManager:
             next_order_id = pysql.scalar_result
             next_order_id_read = 1
 
-        # Validate products and merge duplicates
-        merged_products = {}
-        for product_id, size, color, quantity in products_quantities:
-            if not ProductManager._ProductManager__product_exists(pysql, size, color, product_id):
-                return 1  # Product not found
-            if Decimal(quantity) <= 0:
-                return 2  # Invalid quantity
-            key = (product_id, size, color)
-            merged_products[key] = merged_products.get(key, Decimal("0")) + Decimal(quantity)
+            # Validate products and merge duplicates
+            merged_products = {}
+            for product_id, size, color, quantity in products_quantities:
+                if not ProductManager._ProductManager__product_exists(pysql, product_id, size, color):
+                    return 1  # Product not found
+                if Decimal(quantity) <= 0:
+                    return 2  # Invalid quantity
+                key = (product_id, size, color)
+                merged_products[key] = merged_products.get(key, Decimal("0")) + Decimal(quantity)
 
         # Create order ID
         order_id = "ORD-" + format(next_order_id, "010d")

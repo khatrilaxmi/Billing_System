@@ -1,16 +1,9 @@
 # CmsLib/CounterManager.py
+import re
 from CmsLib.InventoryManager import *
 from CmsLib.TokenManager import *
 
 class CounterManager:
-
-    # List of allowed female clothing product NAMES
-    @staticmethod
-    def __is_female_product(product_name):
-        keywords = ["Kurti", "Saree", "Top", "Skirt", "Dress", "Jacket", "Sari", 
-                    "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women"]
-        return any(keyword.lower() in product_name.lower() for keyword in keywords)
-
 
     # ------------------- ADD COUNTER TO TOKEN -------------------
     @staticmethod
@@ -23,11 +16,6 @@ class CounterManager:
 
         if not product_name:
             return 3  # Product not found
-        
-
-        # Female product validation (using fetched name)
-        if not CounterManager.__is_female_product(product_name):
-            return 5  # Product not allowed
 
         # Token assigned check
         token_assigned = TokenManager.is_token_assigned(pysql, token_id)
@@ -81,11 +69,7 @@ class CounterManager:
         product_name = pysql.scalar_result
 
         if not product_name:
-            return 2
-        
-        # Female product validation (using fetched name)
-        if not CounterManager.__is_female_product(product_name):
-            return 2  # Product not allowed
+            return 3 # Product not found
 
         stored_quantity = InventoryManager._InventoryManager__get_stored_quantity(pysql, product_id, size, color)
         # Ensure it is a number
@@ -93,9 +77,9 @@ class CounterManager:
             stored_quantity = stored_quantity[0]
 
         if quantity <= 0:
-            return 1
+            return 2
         if stored_quantity < quantity:
-            return 3
+            return 4
 
         # Transfer from stored to displayed
         sql_stmt = """UPDATE Inventory
@@ -117,11 +101,8 @@ class CounterManager:
         product_name = pysql.scalar_result
 
         if not product_name:
-            return 1
-        
-        # Female product validation (using fetched name)
-        if not CounterManager.__is_female_product(product_name):
-            return 1  # Product not allowed
+            return 3 # Product not found
+    
       
         sql_stmt = """SELECT Quantity FROM TokensSelectProducts 
                       WHERE TokenID=%s AND ProductID=%s AND Size=%s AND Color=%s"""
@@ -133,7 +114,7 @@ class CounterManager:
             quantity = quantity[0]
 
         if not quantity:
-            return 1
+            return 5 #product not found in token
 
         # Remove from token
         sql_stmt = """DELETE FROM TokensSelectProducts

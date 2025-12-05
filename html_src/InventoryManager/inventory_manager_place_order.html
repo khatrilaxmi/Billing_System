@@ -30,6 +30,10 @@
             padding: 8px;
             text-align: center;
         }
+        table th {
+            background-color: #27ae60;
+            color: white;
+        }
 
         input[type="text"] {
             width: 60px;
@@ -86,11 +90,18 @@
             <tbody>
                 {% for row in products %}
                 <tr>
-                    <td>{{ row.ProductID }}</td>
-                    <td>{{ row.Name }}</td>
-                    <td>{{ row.Size }}</td>
-                    <td>{{ row.Color }}</td>
-                    <td><input type="text" name="Quantity[]" value="0"></td>
+                    <td>{{ row['ProductID'] }}
+                        <input type="hidden" name="ProductID_{{ loop.index0 }}" value="{{ row['ProductID'] }}">
+                    </td>
+                    <td>{{ row['Name'] }}
+                    </td>
+                    <td>{{ row['Size'] }}
+                         <input type="hidden" name="Size_{{ loop.index0 }}" value="{{ row['Size'] }}">
+                    </td>
+                    <td>{{ row['Color'] }}
+                        <input type="hidden" name="Color_{{ loop.index0 }}" value="{{ row['Color'] }}">
+                    </td>
+                    <td><input type="text" name="Quantity_{{ loop.index0 }}" value="0"></td>
                 </tr>
                 {% endfor %}
             </tbody>

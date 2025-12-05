@@ -110,6 +110,10 @@ def inventory_manager_add_product():
         description = request.form['Description'].strip()
         unit_type = "pcs"
         try:
+            entered_quantity = int(request.form['Quantity'].strip())
+        except:
+            return render_template('InventoryManager/inventory_manager_alert.html,', result="Invalid quantity")
+        try:
             unit_price = float(request.form['UnitPrice'].strip())
             current_discount = float(request.form['Discount'].strip())
         except:
@@ -120,13 +124,22 @@ def inventory_manager_add_product():
             return render_template('InventoryManager/inventory_manager_alert.html', result="Invalid Product ID format")
 
         retval = ProductManager.add_product(
-            pysql, product_id, name, description, unit_price, size, color, current_discount
+            pysql, product_id, name, description, unit_price, size, color, entered_quantity, current_discount
         )
 
         if retval == 0:
             return render_template('InventoryManager/inventory_manager_success.html', result="Product added successfully")
-        else:
+        elif retval == 4:
+            return render_template('InventoryManager/inventory_manager_failure.html', reason="Product not allowed")
+        elif retval == 1:
             return render_template('InventoryManager/inventory_manager_failure.html', reason="Product ID or Name/Size/Color duplicate")
+        elif retval == 2:
+            return render_template('InventoryManager/inventory_manager_failure.html', reason="Invalid UnitPrice")
+        elif retval == 3:
+            return render_template('InventoryManager/inventory_manager_failure.html', reason="Invalid discount")
+        elif retval == 5:
+            return render_template('InventoryManager/inventory_manager_failure.html', reason="Invalid quantity")
+        
     else:
         return render_template('/InventoryManager/inventory_manager_add_product.html')
 
@@ -186,8 +199,26 @@ def token_manager_return_token():
         retval = TokenManager.return_token(pysql, token_id)
         if retval == 0:
             return render_template('/TokenManager/token_manager_success.html', result="Token returned successfully")
+        elif retval == 1:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token has product")
+        elif retval == 2:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token not assigned")
+        elif retval == 3:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token does not exist")
+        
         return render_template('/TokenManager/token_manager_failure.html', reason="Cannot return token")
     return render_template('/TokenManager/token_manager_token_id_input.html')
+
+
+@app.route('/TokenManager/GetTokenDetails', methods=['GET', 'POST'])
+def token_manager_details():
+    if request.method == 'POST':
+        token_id = request.form['TokenID']
+        details = TokenManager.get_token_details(pysql, token_id)
+        if not details:  
+                return render_template('/TokenManager/token_manager_alert.html', result="No token details found")
+        return render_template('/TokenManager/token_manager_get_token_details.html', details=details, token_id=token_id)
+    return render_template('TokenManager/token_manager_token_id_input.html')
 
 
 @app.route('/TokenManager/AddToken', methods=['GET'])
@@ -204,8 +235,15 @@ def token_manager_remove_token():
         token_id = request.form['TokenID']
         retval = TokenManager.remove_token(pysql, token_id)
         if retval == 0:
-            return render_template('/TokenManager/token_manager_success.html', result="Token removed successfully")
-        return render_template('/TokenManager/token_manager_failure.html', reason="Cannot remove token")
+            return render_template('/TokenManager/token_manager_success.html', result="Token removed successfully!")
+        elif retval == 1:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token has product!")
+        elif retval == 2:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token is assigned!")
+        elif retval == 3:
+            return render_template('/TokenManager/token_manager_failure.html', reason="Token does not exist!")
+        
+        return render_template('/TokenManager/token_manager_failure.html', reason="Cannot remove token!")
     return render_template('/TokenManager/token_manager_token_id_input.html')
 
 
@@ -238,6 +276,17 @@ def counter_add_products_to_token():
         retval = CounterManager.add_counter_to_token(pysql, token_id, product_id, quantity, size, color)
         if retval == 0:
             return render_template('/CounterOperator/counter_operator_success.html', result="Products added successfully")
+        elif retval == 1:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Token not aasigned")
+        elif retval == 2:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Invalid Quantity")
+        elif retval == 3:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not found")
+        elif retval == 4:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Insufficient Quantity")
+        elif retval == 5:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not allowed")
+        
         return render_template('/CounterOperator/counter_operator_failure.html', reason="Error adding products")
     return render_template('/CounterOperator/counter_operator_add_products_to_token.html')
 
@@ -257,6 +306,13 @@ def counter_add_inventory_to_counter():
         retval = CounterManager.add_inventory_to_counter(pysql, product_id, quantity, size, color)
         if retval == 0:
             return render_template('/CounterOperator/counter_operator_success.html', result="Products transferred successfully")
+        elif retval == 2:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Invalid quantity")
+        elif retval == 3:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not found")
+        elif retval == 4:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Insufficient Quantity")
+        
         return render_template('/CounterOperator/counter_operator_failure.html', reason="Error transferring products")
     return render_template('/CounterOperator/counter_operator_add_inventory_to_counter.html')
 
@@ -272,6 +328,13 @@ def counter_add_token_to_counter():
         retval = CounterManager.add_token_to_counter(pysql, token_id, product_id, size, color)
         if retval == 0:
             return render_template('/CounterOperator/counter_operator_success.html', result="Product returned successfully")
+        elif retval == 3:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not found")
+        elif retval == 5:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not allowed")
+        elif retval == 6:
+            return render_template('/CounterOperator/counter_operator_failure.html', reason="Product not found in token")
+    
         return render_template('/CounterOperator/counter_operator_failure.html', reason="Error returning product")
     return render_template('/CounterOperator/counter_operator_add_token_to_counter.html')
 

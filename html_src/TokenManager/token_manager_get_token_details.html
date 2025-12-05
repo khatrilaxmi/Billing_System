@@ -20,7 +20,7 @@
         }
 
         table {
-            width: 60%;
+            width: 70%;
             margin: 0 auto;
             border-collapse: collapse;
             background-color: #fff;
@@ -31,7 +31,7 @@
 
         th, td {
             padding: 12px 15px;
-            border: 1px solid #27ae60;
+            border-bottom: 1px solid #27ae60;
             text-align: center;
             font-size: 1rem;
         }
@@ -58,7 +58,7 @@
             text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .button:hover {
@@ -74,16 +74,21 @@
     <table>
         <thead>
             <tr>
+                <th>TokenID</th>
                 <th>Product ID</th>
+                <th>Size</th>
+                <th>Color</th>
                 <th>Quantity</th>
             </tr>
         </thead>
         <tbody>
-            {% for row in token_details %}
+            {% for product in details %}
             <tr>
-                {% for detail in row %}
-                <td>{{ detail }}</td>
-                {% endfor %}
+                <td>{{ token_id }}</td>
+                <td>{{ product[0] }}</td>
+                <td>{{ product[1] }}</td>
+                <td>{{ product[2] }}</td>
+                <td>{{ product[3] }}</td>
             </tr>
             {% endfor %}
         </tbody>

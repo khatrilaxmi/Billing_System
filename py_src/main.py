@@ -50,65 +50,22 @@ with app.app_context():
     # 2. Add sample women's clothing products
     # -----------------------------
     products = [
-        # ProductID, Name, Description, UnitPrice, Size, Color, CurrentDiscount
-        ("KUR-001", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "S", "Red", 0),
-        ("KUR-002", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "M", "Red", 0),
-        ("SAR-003", "Silk Saree", "Pure Banarasi silk saree with golden border", 5200.00, "L", "Golden", 0),
-        ("TOP-004", "Ladies Formal Top", "Office wear formal top (navy blue)", 1450.00, "M", "Blue", 0),
-        ("SKT-005", "Long Skirt", "Printed chiffon long skirt", 1650.00, "L", "Pink", 0),
-        ("DRS-006", "Party Dress", "Elegant evening gown", 3500.00, "S", "Black", 0),
+        # ProductID, Name, Description, UnitPrice, Size, Color, entered quantity, CurrentDiscount
+        ("KUR-001", "Women’s Designer Kurti", "Cotton blend with embroidery", 1800.00, "S", "Red", 100, 0),
+        ("KUR-002", "Women’s  Kurti", "Cotton blend with embroidery", 1800.00, "M", "Red", 80, 5),
+        ("SAR-003", "Silk Saree", "Pure Banarasi silk saree with golden border", 5200.00, "L", "Golden", 150, 3),
+        ("TOP-004", "Ladies Formal Top", "Office wear formal top (navy blue)", 1450.00, "M", "Blue", 90, 10),
+        ("SKT-005", "Long Skirt", "Printed chiffon long skirt", 1650.00, "L", "Pink", 120, 15),
+        ("DRS-006", "Party Dress", "Elegant evening gown", 3500.00, "S", "Black", 110, 5),
     ]
 
-    for pid, name, desc, price, size, color, discount in products:
+    for pid, name, desc, price, size, color, entered_qty, discount in products:
         pid = pid.strip()
-        ProductManager.add_product(pysql, pid, name, desc, price, size, color, discount=discount)
+        ProductManager.add_product(pysql, pid, name, desc, price, size, color, entered_qty, discount=discount)
 
     # -----------------------------
     # 3. Initialize inventory
     # -----------------------------
-
-    inventory_data = [
-        ("KUR-001", "S", "Red", 50, 20, 10),
-        ("KUR-002", "M", "Red", 40, 15, 10),
-        ("SAR-003", "L", "Golden", 30, 10, 5),
-        ("TOP-004", "M", "Blue", 60, 25, 10),
-        ("SKT-005", "L", "Pink", 40, 20, 5),
-        ("DRS-006", "S", "Black", 20, 10, 5),
-    ]
-
-    for pid, size, color, stored, displayed, threshold in inventory_data:
-        # 1️⃣ Check if product exists
-        sql_product_check = "SELECT COUNT(*) FROM Products WHERE ProductID=%s"
-        pysql.run(sql_product_check, (pid,))
-        product_exists = pysql.scalar_result
-
-        if not product_exists:
-           print(f"⚠️ Product {pid} does not exist in Products table. Skipping inventory insert.")
-           continue  # Skip this inventory entry
-        
-        # Check if inventory row exists
-        sql_check = "SELECT COUNT(*) FROM Inventory WHERE ProductID=%s AND Size=%s AND Color=%s"
-        pysql.run(sql_check, (pid, size, color))
-        exists = pysql.scalar_result
-        if exists:
-             # Update existing inventory
-             sql_update = """
-                UPDATE Inventory
-                SET StoredQuantity = %s,
-                  DisplayedQuantity = %s,
-                  StoreThreshold = %s
-             WHERE ProductID=%s AND Size=%s AND Color=%s
-             """
-             pysql.run(sql_update, (stored, displayed, threshold, pid, size, color))
-        else:
-            # Insert new inventory
-            sql_insert = """
-              INSERT INTO Inventory
-             (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
-             VALUES (%s,%s,%s,%s,%s,%s)
-             """
-            pysql.run(sql_insert, (pid, size, color, stored, displayed, threshold))
-
 
     # -----------------------------
     # 4. Generate tokens
@@ -127,10 +84,10 @@ with app.app_context():
     # -----------------------------
     # 5. Add items to customer tokens
     # -----------------------------
-    CounterManager.add_counter_to_token(pysql, tok1, "KUR-001", 1, "S", "Red")
-    CounterManager.add_counter_to_token(pysql, tok1, "TOP-004", 2, "M", "Blue")
-    CounterManager.add_counter_to_token(pysql, tok2, "SAR-003", 1, "L", "Golden")
-    CounterManager.add_counter_to_token(pysql, tok2, "DRS-006", 1, "S", "Black")
+    CounterManager.add_counter_to_token(pysql, tok1, "KUR-001", "S", "Red", 1)
+    CounterManager.add_counter_to_token(pysql, tok1, "TOP-004", "M", "Blue", 2)
+    CounterManager.add_counter_to_token(pysql, tok2, "SAR-003", "L", "Golden,", 1)
+    CounterManager.add_counter_to_token(pysql, tok2, "DRS-006", "S", "Black", 1)
 
     # -----------------------------
     # 6. Move inventory to counter
