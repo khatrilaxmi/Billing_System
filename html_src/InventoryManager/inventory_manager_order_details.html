@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Order Details Home</title>
@@ -19,18 +20,35 @@
             text-shadow: 1px 1px 2px #aaa;
         }
 
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 25px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+            width: 300px;
+        }
+
         input[type="text"] {
-            padding: 8px 10px;
-            width: 250px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
             margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
         }
 
         .form-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px; /* space between buttons */
+            gap: 20px;
+            /* space between buttons */
             margin-top: 20px;
         }
 
@@ -57,16 +75,18 @@
         }
     </style>
 </head>
+
 <body>
     <h2>Enter the Order ID</h2>
 
     <form method="POST" action="">
-        <input type="text" name="OrderID" placeholder="Order ID" required><br>
-
+        <h3>Order ID</h3>
+        <input type="text" name="OrderID" placeholder="e.g., ORD-0000000001" required><br>
         <div class="form-buttons">
             <input type="submit" value="Submit" class="button">
             <a href="/InventoryManager" class="button">Back</a>
         </div>
     </form>
 </body>
+
 </html>

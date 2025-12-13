@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product - {{ product[0] }}</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        input[readonly] {
+            background-color: #e6f2e6; /* light green for read-only */
+            color: #555;
+        }
+
+        button {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 2px 2px 6px #aaa;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .form-buttons a {
+            text-decoration: none;
+            padding: 12px 20px;
+            color: white;
+            background-color: #27ae60;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 6px #aaa;
+        }
+
+        .form-buttons a:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Edit Product - {{ product[0] }}</h2>
+
+    <form method="POST">
+        <input type="hidden" name="next_url" value="{{ next_url }}">
+        
+        <label>Product Name:</label>
+        <input type="text" name="name" value="{{ product[1] }}" required>
+
+        <label>Description:</label>
+        <input type="text" name="description" value="{{ product[2] }}">
+
+        <label>Unit Price:</label>
+        <input type="number" step="0.001" name="price" value="{{ product[3] }}" required>
+
+        <label>Size:</label>
+        <input type="text" name="size" value="{{ product[5]  }}" readonly>
+
+        <label>Color:</label>
+        <input type="text" name="color" value="{{ product[6] }}" readonly>
+
+        <label>Discount (%):</label>
+        <input type="number" step="0.01" name="discount" value="{{ product[7] }}">
+
+        <div class="form-buttons">
+            <button type="submit">Save</button>
+            <a href="{{ next_url | default('/InventoryManager') }}">Back</a>
+        </div>
+    </form>
+</body>
+
+</html>

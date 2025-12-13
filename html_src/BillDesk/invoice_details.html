@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Invoice Products</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 1px 1px 2px #aaa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.10);
+        }
+
+        thead {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 18px;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            background-color: #27ae60;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 2px 2px 5px #999;
+            transition: 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        .btn-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>All Products in Invoices</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Invoice ID</th>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Color</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Invoice</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for row in invoice_products %}
+        <tr>
+            <td>{{ row[0] }}</td>   <!-- InvoiceID -->
+            <td>{{ row[1]}}</td>     <!--ProductID -->
+            <td>{{ row[2] }}</td>   <!-- Name -->
+            <td>{{ row[3] }}</td>   <!-- Size -->
+            <td>{{ row[4] }}</td>   <!-- Color -->
+            <td>{{ row[5] }}</td>   <!-- Quantity -->
+            <td>{{ row[6] }}</td>   <!-- Unit Price -->
+            <td>{{ row[7]}} </td>  <!-- Total invoice -->  
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="btn-area">
+    <a href="/index" class="button">Back</a>
+</div>
+
+</body>
+</html>

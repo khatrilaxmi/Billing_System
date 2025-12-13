@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Add Product to Counter</title>
@@ -25,7 +26,7 @@
             border-radius: 10px;
             max-width: 400px;
             margin: 0 auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .button {
@@ -49,61 +50,64 @@
         .button:hover {
             background-color: #2ecc71;
             transform: translateY(-2px);
-            box-shadow: 3px 3px 8px #888; /* updated hover shadow */
+            box-shadow: 3px 3px 8px #888;
+            /* updated hover shadow */
         }
 
         .form-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px; /* gap between Add and Back buttons */
+            gap: 20px;
+            /* gap between Add and Back buttons */
             margin-top: 20px;
         }
-        
+
         .input-row {
-           display: flex;
-           align-items: center;
-           margin-top: 15px;
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
             margin-bottom: 25px;
-       }
+        }
 
         .input-row label {
-           width: 120px;   /* fixed width so alignment stays clean */
-           text-align: right;
-           font-weight: bold;
-           margin-right: 10px;
-           font-weight: bold;
-       }
+            width: 120px;
+            /* fixed width so alignment stays clean */
+            text-align: right;
+            font-weight: bold;
+            margin-right: 10px;
+            font-weight: bold;
+        }
 
         .input-row input {
-           flex: 1;
-           padding: 10px;
-           border: 1px solid #ccc;
-           border-radius: 5px;
-       }
-
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
-<body>
 
+<body>
+    <h2>Move product from inventory to counter</h2>
     <form method="POST">
         <div class="input-row">
-          <label for="ProductID">Product ID:</label>
-          <input type="text" id="ProductID" name="ProductID" placeholder="e.g. KUR-001" required>
-        </div>
-        
-        <div class="input-row">
-          <label for="Size">Size:</label>
-          <input type="text" id="Size" name="Size" placeholder="e.g. M" required>
+            <label for="ProductID">Product ID:</label>
+            <input type="text" id="ProductID" name="ProductID" placeholder="e.g. KUR-001" required>
         </div>
 
         <div class="input-row">
-          <label for="Color">Color:</label>
-          <input type="text" id="Color" name="Color" placeholder="e.g. Red" required>
+            <label for="Size">Size:</label>
+            <input type="text" id="Size" name="Size" placeholder="e.g. M" required>
         </div>
 
         <div class="input-row">
-          <label for="Quantity">Quantity:</label>
-          <input type="text" id="Quantity" name="Quantity" placeholder="e.g. 5" required>
+            <label for="Color">Color:</label>
+            <input type="text" id="Color" name="Color" placeholder="e.g. Red" required>
+        </div>
+
+        <div class="input-row">
+            <label for="Quantity">Quantity:</label>
+            <input type="text" id="Quantity" name="Quantity" placeholder="e.g. 5" required>
         </div>
 
         <div class="form-buttons">
@@ -112,4 +116,5 @@
         </div>
     </form>
 </body>
+
 </html>

@@ -14,12 +14,12 @@ class ProductManager:
     @staticmethod
     def __is_female_product(product_name):
         keywords = ["Kurthi", "Kurti", "Saree", "Top", "Skirt", "Dress", "Jacket", "Sari",
-                    "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women", "Girls", "Lekhenga"]
+                    "T-shirt", "Pant", "Blouse", "Frock", "Ladies", "Women", "Girls", "Lehenga"]
         product = product_name.lower()
         return any(re.search(rf"\b{kw}\b", product, flags=re.IGNORECASE) for kw in keywords)
 
     @staticmethod
-    def __add_product(pysql, product_id, name, description, unit_price, size, color, entered_quantity, discount=None):
+    def __add_product(pysql, product_id, name, description, unit_price, size, color, discount=None):
         """
          Adds a new product with size and color.
          Rejects any product name that is not female.
@@ -36,8 +36,6 @@ class ProductManager:
         # Check if price is positive
         if unit_price <= 0:
             return 2
-        if entered_quantity <= 0:
-            return 5
 
         # Check discount
         if discount is not None and discount < 0:
@@ -52,18 +50,12 @@ class ProductManager:
         pysql.run(sql_stmt, (product_id, name, description, unit_price, size, color, discount or 0))
 
         # Initialize inventory
-        print("Entered Quantity:", entered_quantity)
-        stored_qty = round(entered_quantity * 0.60)
-        display_qty = entered_quantity - stored_qty
-
-        print("Stored Quantity:", stored_qty, "Display Quantity:", display_qty )
-
         sql_stmt = """
             INSERT INTO Inventory
             (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold)
             VALUES (%s, %s, %s, %s, %s, %s)
         """
-        pysql.run(sql_stmt, (product_id, size, color, stored_qty, display_qty, 5))
+        pysql.run(sql_stmt, (product_id, size, color, 0, 0, 0))
         return 0
 
     @staticmethod
@@ -89,8 +81,17 @@ class ProductManager:
         return 0
 
     @staticmethod
+    def __update_product_name(pysql, product_id, name):
+        if not ProductManager._ProductManager__product_exists_any(pysql, product_id):
+            return 1
+
+        sql_stmt = "UPDATE Products SET Name = %s WHERE ProductID = %s"
+        pysql.run(sql_stmt, (name, product_id))
+        return 0
+    
+    @staticmethod
     def __update_product_description(pysql, product_id, description):
-        if not ProductManager._ProductManager__product_exists(pysql, product_id):
+        if not ProductManager._ProductManager__product_exists_any(pysql, product_id):
             return 1
 
         sql_stmt = "UPDATE Products SET Description = %s WHERE ProductID = %s"
@@ -102,7 +103,12 @@ class ProductManager:
         sql_stmt = "SELECT COUNT(*) FROM Products WHERE ProductID = %s AND Size = %s AND Color = %s"
         pysql.run(sql_stmt, (product_id, size, color))
         return pysql.scalar_result
-
+    
+    @staticmethod
+    def __product_exists_any(pysql, product_id):
+        sql = "SELECT COUNT(*) FROM Products WHERE ProductID = %s"
+        pysql.run(sql, (product_id,))
+        return pysql.scalar_result
 
     @staticmethod
     def __get_all_products(pysql):
@@ -119,9 +125,9 @@ class ProductManager:
     # ---------- PUBLIC WRAPPERS ----------
 
     @staticmethod
-    def add_product(pysql, product_id, name, description, unit_price, size, color, entered_quantity, discount=None):
+    def add_product(pysql, product_id, name, description, unit_price, size, color, discount=None):
         return pysql.run_transaction(
-            ProductManager.__add_product, product_id, name, description, unit_price, size, color, entered_quantity, discount
+            ProductManager.__add_product, product_id, name, description, unit_price, size, color, discount
         )
 
     @staticmethod
@@ -131,6 +137,10 @@ class ProductManager:
     @staticmethod
     def update_product_price(pysql, product_id, size, color, price):
         return pysql.run_transaction(ProductManager.__update_product_price, product_id, size, color, price)
+    
+    @staticmethod
+    def update_product_name(pysql, product_id, name):
+        return pysql.run_transaction(ProductManager.__update_product_name, product_id, name)
 
     @staticmethod
     def update_product_description(pysql, product_id, description):
@@ -139,6 +149,10 @@ class ProductManager:
     @staticmethod
     def product_exists(pysql, product_id, size, color):
         return pysql.run_transaction(ProductManager.__product_exists, product_id, size, color, commit=False )
+    
+    @staticmethod
+    def product_exists_any(pysql, product_id):
+        return pysql.run_transaction(ProductManager.__product_exists_any, product_id, commit=False)
 
     @staticmethod
     def get_all_products(pysql):

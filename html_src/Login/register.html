@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 2px 2px 6px #aaa;
+            width: 150%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input {
+            padding: 11px;
+            margin-top: 5px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 6px #aaa;
+            background: #27ae60;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 8px #888;
+        }
+
+        a {
+            margin-top: 10px;
+            color: #34495e;
+            text-decoration: none;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-left: 10px;
+            /* space for icon */
+            padding-right: 35px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form method="post" action="/register">
+        {% if errors %}
+        <ul style="color:red;">
+            {% for e in errors %}
+            <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <h2 style="color: #34495e;">Create Account</h2>
+
+        <label>Username</label>
+        <input type="text" name="username" required autocapitalize="new-username">
+
+        <label>Password</label>
+        <div class="password-wrapper">
+            <input type="password" name="password" id="password" required autocomplete="new-password">
+            <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+        </div>
+
+        <label>Confirm Password</label>
+        <div class="password-wrapper">
+            <input type="password" name="confirm" id="confirm" required autocomplete="new-password">
+            <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('confirm', this)"></i>
+        </div>
+
+        <button type="submit">Register</button>
+
+        <a href="/login">Already have an account? Login</a>
+    </form>
+    <script>
+        function togglePassword(inputId, icon) {
+            const pwd = document.getElementById(inputId);
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                pwd.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+</body>
+
+</html>

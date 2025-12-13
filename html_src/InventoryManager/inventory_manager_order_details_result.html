@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Order Details</title>
@@ -14,8 +15,8 @@
 
         h2 {
             color: #333;
-            font-size: 2rem;
-            margin: 30px 0;
+            font-size: 1.5rem;
+            margin: 20px 0;
             text-shadow: 1px 1px 2px #aaa;
         }
 
@@ -26,7 +27,8 @@
             background: #fff;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 60px;
         }
 
         th {
@@ -59,7 +61,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: all 0.3s ease;
-            margin: 20px 0;
+            margin: 10px 0;
         }
 
         .button:hover {
@@ -69,6 +71,7 @@
         }
     </style>
 </head>
+
 <body>
     <h2>Order Status</h2>
 
@@ -77,15 +80,16 @@
             <tr>
                 <th>Order ID</th>
                 <th>Order Date</th>
-                <th>Delivered?</th>
-                <th>Cancelled?</th>
+                <th>Delivered</th>
+                <th>Cancelled</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                {% for d in order_status %}
-                <td>{{ d }}</td>
-                {% endfor %}
+                <td>{{ order_header[0] }}</td>
+                <td>{{ order_header[1] }}</td>
+                <td>{{ "Yes" if order_header[2] else "No" }}</td>
+                <td>{{ "Yes" if order_header[3] else "No" }}</td>
             </tr>
         </tbody>
     </table>
@@ -97,21 +101,25 @@
             <tr>
                 <th>Product ID</th>
                 <th>Product Name</th>
+                <th>Size</th>
+                <th>Color</th>
                 <th>Quantity</th>
-                <th>Quantity Unit</th>
             </tr>
         </thead>
         <tbody>
-            {% for row in order_details %}
-            <tr>
-                {% for d in row %}
-                <td>{{ d }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
+              {% for product in order_items %}
+        <tr>
+            <td>{{ product[0] }}</td>
+            <td>{{ product[1] }}</td>
+            <td>{{ product[2] }}</td>
+            <td>{{ product[3] }}</td>
+            <td>{{ product[4] }}</td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 
     <a href='/InventoryManager' class="button">Back</a>
 </body>
+
 </html>

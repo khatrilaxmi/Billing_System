@@ -99,6 +99,21 @@ class TokenManager:
         sql_stmt = "SELECT `TokenID`, `Assigned` FROM `Tokens`"
         pysql.run(sql_stmt)
         return pysql.result
+    
+    @staticmethod
+    def __get_pending_tokens(pysql):
+        """
+        Returns a list of TokenIDs that have products assigned (i.e., pending tokens)
+        """
+        sql_stmt = "SELECT DISTINCT `TokenID` FROM `TokensSelectProducts`"
+        pysql.run(sql_stmt)
+        
+        pending_tokens = [row[0] for row in pysql.result]
+        print("Pending Tokens okay:", pending_tokens)
+        if not pysql.result:
+            return []
+        return [row[0] for row in pysql.result]
+
 
     # ---------- PUBLIC WRAPPERS ----------
 
@@ -129,6 +144,10 @@ class TokenManager:
     @staticmethod
     def get_all_tokens_status(pysql):
         return pysql.run_transaction(TokenManager.__get_all_tokens_status, commit=False)
+    
+    @staticmethod
+    def get_pending_tokens(pysql):
+        return pysql.run_transaction(TokenManager.__get_pending_tokens, commit=False)
 
     @staticmethod
     def get_token_details(pysql, token_id):

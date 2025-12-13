@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Token Details</title>
+    <title>Pending Tokens</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         body {
@@ -20,7 +20,7 @@
         }
 
         table {
-            width: 70%;
+            width: 50%;
             margin: 0 auto;
             border-collapse: collapse;
             background-color: #fff;
@@ -31,7 +31,7 @@
 
         th, td {
             padding: 12px 15px;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #ddd;
             text-align: center;
             font-size: 1rem;
         }
@@ -69,31 +69,23 @@
     </style>
 </head>
 <body>
-    <h2>{{Title}}</h2>
+    <h2> {{Title}} </h2>
 
     <table>
         <thead>
             <tr>
-                <th>TokenID</th>
-                <th>Product ID</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Quantity</th>
+                <th>Token ID</th>
             </tr>
         </thead>
         <tbody>
-            {% for product in details %}
+            {% for token in pending_tokens %}
             <tr>
-                <td>{{ token_id }}</td>
-                <td>{{ product[0] }}</td>
-                <td>{{ product[1] }}</td>
-                <td>{{ product[2] }}</td>
-                <td>{{ product[3] }}</td>
+                <td>{{ token }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <a href="/TokenManager" class="button">Back</a>
+    <a href="/index" class="button">Back</a>
 </body>
 </html>

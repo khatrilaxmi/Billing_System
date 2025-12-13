@@ -165,6 +165,27 @@ class InventoryManager:
         """
         pysql.run(sql_stmt)
         return pysql.result
+    @staticmethod
+    def __get_low_stock_notifications(pysql):
+        
+        sql_stmt = """
+            SELECT 
+               Inventory.ProductID,
+               Products.Name,
+               Inventory.Size,
+               Inventory.Color,
+               Inventory.StoredQuantity,
+               Inventory.StoreThreshold
+            FROM Inventory
+            JOIN Products ON Inventory.ProductID = Products.ProductID
+                          AND Inventory.Size = Products.Size
+                          AND Inventory.Color = Products.Color
+            WHERE Inventory.StoredQuantity <= Inventory.StoreThreshold
+            ORDER BY Inventory.StoredQuantity ASC
+        """
+        pysql.run(sql_stmt)
+        return pysql.result
+
 
     @staticmethod
     def __get_transactions_by_date(pysql, date):
@@ -251,3 +272,7 @@ class InventoryManager:
     @staticmethod
     def get_transactions_of_product_by_date(pysql, product_id, size, color, date):
         return pysql.run_transaction(InventoryManager.__get_transactions_of_product_by_date, product_id, size, color, date, commit=False)
+    
+    @staticmethod
+    def get_low_stock_notifications(pysql):
+        return pysql.run_transaction(InventoryManager.__get_low_stock_notifications, commit=False)

@@ -70,7 +70,7 @@
     </style>
 </head>
 <body>
-    <h2>Inventory Details</h2>
+    <h2>{{Title}}</h2>
 
     <table>
         <thead>
@@ -98,7 +98,7 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <a href="/InventoryManager" class="button back-button">Back</a>
+    
+    <a href="{{ next_url | default('/InventoryManager') }}" class="button back-button">Back</a>
 </body>
 </html>

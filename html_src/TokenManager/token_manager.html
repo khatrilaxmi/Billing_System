@@ -2,48 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Token Manager</title>
+    <title>Token Manager Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background: #f0f2f5;
             margin: 0;
             padding: 20px;
         }
 
-        h1 {
-            color: #d35400;
-            font-size: 2.5rem;
+        .header {
             text-align: center;
-            text-shadow: 1px 1px 2px #aaa;
-            margin-bottom: 30px;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        h2 {
-            color: #d35400;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 1px 1px 2px #aaa;
+        .header h2 {
+            margin: 0;
+            font-size: 1.8rem;
         }
 
-        form {
+        .header p {
+            margin: 5px 0 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .dashboard-card {
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 400px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
         }
 
-        .button {
+        .dashboard-card i {
+            font-size: 2rem;
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: #f9fff9;
+        }
+
+        /* Back Button */
+         .back-button {
             display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            width: 100px;
+            padding: 12px 0;
+            margin: 25px auto 0;
             font-size: 1.1rem;
             font-weight: bold;
             text-align: center;
@@ -51,48 +85,38 @@
             background-color: #27ae60;
             border: none;
             border-radius: 10px;
-            box-shadow: 2px 2px 6px #aaa;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
-        }
-
-        .button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-3px);
-            box-shadow: 3px 3px 8px #888;
-        }
-
-        .back-button {
-            width: auto;
-            background-color: #27ae60;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 6px #aaa;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
-            text-align: center;
         }
 
         .back-button:hover {
             background-color: #2ecc71;
             transform: translateY(-2px);
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
-    <h2>Choose One of the Options</h2>
+
+    <div class="header">
+        <h2>Token Manager</h2>
+        <p>Manage tokens efficiently</p>
+    </div>
+
     <form method="POST" action="">
-        <input type="submit" name="GetTokenStatuses" value="Get Token Statuses" class="button">
-        <input type="submit" name="GetToken" value="Get New Token" class="button">
-        <input type="submit" name="ReturnToken" value="Return Token" class="button">
-        <input type="submit" name="GetTokenDetails" value="Get Token Details" class="button">
-        <input type="submit" name="AddToken" value="Add Token" class="button">
-        <input type="submit" name="RemoveToken" value="Remove Token" class="button">
+        <div class="dashboard-grid">
+            <button type="submit" name="GetTokenStatuses" class="dashboard-card"><i class="fas fa-info-circle"></i>Get Token Statuses</button>
+            <button type="submit" name="GetToken" class="dashboard-card"><i class="fas fa-plus-circle"></i>Assign Token</button>
+            <button type="submit" name="ReturnToken" class="dashboard-card"><i class="fas fa-undo"></i>Unassign Token</button>
+            <button type="submit" name="GetTokenDetails" class="dashboard-card"><i class="fas fa-eye"></i>Get Token Details</button>
+            <button type="submit" name="AddToken" class="dashboard-card"><i class="fas fa-plus"></i>Add Token</button>
+            <button type="submit" name="RemoveToken" class="dashboard-card"><i class="fas fa-trash"></i>Remove Token</button>
+        </div>
     </form>
-    <a href='/' class="back-button">Back</a>
+
+    <a href="/" class="back-button"> Back</a>
+
 </body>
 </html>

@@ -156,7 +156,7 @@
         <!-- Buttons Side by Side -->
         <div class="button-group">
             <input type="submit" value="Submit" class="button">
-            <a href="/BillDesk" class="button">Back</a>
+            <a href="{{ next_url | default('/BillDesk') }}" class="button">Back</a>
         </div>
 
     </form>

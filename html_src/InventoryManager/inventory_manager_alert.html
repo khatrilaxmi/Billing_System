@@ -91,7 +91,7 @@
 
     <h2>{{ result }}</h2>
 
-    <a href='/InventoryManager' class="button">Back</a>
+    <a href='{{ next_url | default('/InventoryManager') }}' class="button">Back</a>
 </div>
 </body>
 </html>

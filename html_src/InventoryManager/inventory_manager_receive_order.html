@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Receive Order</title>
     <meta charset="utf-8">
@@ -19,11 +20,30 @@
             text-shadow: 1px 1px 2px #aaa;
         }
 
-        input[type="text"] {
-            padding: 6px 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        h3 {
+            color: #555;
+            margin-bottom: 10px;
         }
+
+        form {
+            display: inline-block;
+            background: #fff;
+            padding: 25px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+            width: 300px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
 
         .form-buttons {
             display: flex;
@@ -55,15 +75,18 @@
         }
     </style>
 </head>
+
 <body>
     <h2>Enter the Order ID to be received</h2>
 
     <form method="POST">
-        Order ID : <input type="text" name="OrderID" required>
+        <h3> Order ID</h3>
+        <input type="text" name="OrderID" placeholder="e.g., ORD-0000000001" required>
         <div class="form-buttons">
             <input type="submit" value="Submit" class="button">
             <a href="/InventoryManager" class="button">Back</a>
         </div>
     </form>
 </body>
+
 </html>

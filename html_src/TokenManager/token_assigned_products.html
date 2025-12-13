@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <h2>{{Title}}</h2>
+    <h2> Token Assigned Products </h2>
 
     <table>
         <thead>
@@ -82,18 +82,18 @@
             </tr>
         </thead>
         <tbody>
-            {% for product in details %}
+            {% for product in assigned_products %}
             <tr>
-                <td>{{ token_id }}</td>
                 <td>{{ product[0] }}</td>
                 <td>{{ product[1] }}</td>
                 <td>{{ product[2] }}</td>
                 <td>{{ product[3] }}</td>
+                <td>{{ product[4] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <a href="/TokenManager" class="button">Back</a>
+    <a href="/index" class="button">Back</a>
 </body>
 </html>

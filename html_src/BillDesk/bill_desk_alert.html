@@ -98,7 +98,7 @@
     <h2>{{ result }}</h2>
     <p>Check product color, size, or inventory status.</p>
 
-    <a href='/BillDesk' class="button">Back</a>
+    <a href= "{{ next_url | default('/BillDesk')}}" class="button">Back</a>
 </div>
 </body>
 </html>

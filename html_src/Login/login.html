@@ -1,135 +1,172 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Login - Shree Laxmi Collection</title>
-        <style>
-            
-            * {
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Shree Laxmi Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
             box-sizing: border-box;
-            }
+        }
 
-            body {
-                font-family: 'Arial', sans-serif;
-                background: #f9f9f9;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                margin: 0;
-                padding: 20px;
-            }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
 
-            form {
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-                box-shadow: 2px 2px 6px #aaa;
-                width: 150%;
-                max-width: 400px;
-                display: flex;
-                flex-direction: column;
-            }
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 2px 2px 6px #aaa;
+            width: 150%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
 
-            label {
-                font-weight: bold;
-                margin-top: 15px;
-                color: #34495e;
-            }
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #34495e;
+        }
 
-            input {
-                
-                padding: 11px;
-                margin-top: 5px;
-                border-radius: 10px;
-                border: 1px solid #ccc;
-                font-size: 1rem;
-            }
+        input {
 
-            button {
-                margin-top: 20px;
-                padding: 12px;
-                width: 100%;
-                border: none;
-                font-size: 1.1rem;
-                font-weight: bold;
-                border-radius: 40px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 2px 2px 6px #aaa;
-            }
+            padding: 11px;
+            margin-top: 5px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
 
-            .login-btn {
-                background-color: #27ae60;
-                color: white;
-            }
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 6px #aaa;
+        }
 
-            .login-btn:hover {
-                background-color: #2ecc71;
-                transform: translateY(-3px);
-                box-shadow: 3px 3px 8px #888;
-            }
+        .login-btn {
+            background-color: #27ae60;
+            color: white;
+        }
 
-            .register-btn {
-                display: block;
-                width: 100%;
-                text-align: center;
-                padding: 12px;
-                margin-top: 5px; /* Close to OR line */
-                border-radius: 40px;
-                border: 1px solid #27ae60;
-                background-color: white;
-                color: #27ae60;
-                font-size: 1.1rem;
-                font-weight: bold;
-                text-decoration: none;
-                box-shadow: 2px 2px 6px #aaa;
-                transition: all 0.3s ease;
-            }
+        .login-btn:hover {
+            background-color: #2ecc71;
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 8px #888;
+        }
 
-            .register-btn:hover {
-                background-color: #f0f0f0;
-                transform: translateY(-3px);
-                box-shadow: 3px 3px 8px #888;
-            }
+        .register-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            margin-top: 5px;
+            /* Close to OR line */
+            border-radius: 40px;
+            border: 1px solid #27ae60;
+            background-color: white;
+            color: #27ae60;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 2px 2px 6px #aaa;
+            transition: all 0.3s ease;
+        }
 
-            .forgot-password {
-                align-self: flex-start;
-                margin-top: 10px;
-                font-size: 0.9rem;
-                text-decoration: none;
-                color: #34495e;
-                transition: 0.3s;
-            }
+        .register-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
+            box-shadow: 3px 3px 8px #888;
+        }
 
-            .forgot-password:hover {
-                text-decoration: underline;
-            }
+        .forgot-password {
+            align-self: flex-start;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            color: #34495e;
+            transition: 0.3s;
+        }
 
-            .or-container {
-                display: flex;
-                align-items: center;
-                width: 100%;
-                margin: 20px 0;
-            }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
 
-            .or-container .line {
-                flex: 1;
-                height: 1px;
-                background-color: #ccc;
-            }
+        .or-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin: 20px 0;
+        }
 
-            .or-container .or-text {
-                margin: 0 10px;
-                font-size: 0.95rem;
-                color: #888;
-                white-space: nowrap;
-            }
+        .or-container .line {
+            flex: 1;
+            height: 1px;
+            background-color: #ccc;
+        }
 
-        </style>
-    </head>
+        .or-container .or-text {
+            margin: 0 10px;
+            font-size: 0.95rem;
+            color: #888;
+            white-space: nowrap;
+        }
 
-    <body>
+        .form-wrapper {
+            width: 100%;
+            max-width: 400px;
+            align-items: center;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-left: 10px;
+            /* space for icon */
+            padding-right: 35px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-wrapper">
+        <h2 style="color: #34495e; text-align: center;">
+            Welcome to Login Page
+        </h2>
 
         <form method="post" action="/login" autocomplete="off">
             {% if error %}
@@ -139,9 +176,25 @@
             <input type="text" name="username" required>
 
             <label>Password</label>
-            <input type="password" name="password" required autocomplete="new-password">
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" required autocomplete="new-password">
+                <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+            </div>
 
-            <a href="/forgot_password" class="forgot-password">Forgot Password?</a>
+            <script>
+                function togglePassword(inputId, icon) {
+                    const pwd = document.getElementById(inputId);
+                    if (pwd.type === "password") {
+                        pwd.type = "text";
+                        icon.classList.remove("fa-eye");
+                        icon.classList.add("fa-eye-slash");
+                    } else {
+                        pwd.type = "password";
+                        icon.classList.remove("fa-eye-slash");
+                        icon.classList.add("fa-eye");
+                    }
+                }
+            </script>
 
             <button type="submit" class="login-btn">Login</button>
 
@@ -155,6 +208,8 @@
 
 
         </form>
+    </div>
 
-    </body>
-    </html>
+</body>
+
+</html>

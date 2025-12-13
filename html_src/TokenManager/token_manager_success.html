@@ -100,7 +100,7 @@
     </div>
 
     <h2>{{ result }}</h2>
-    <a href='/TokenManager' class="button">Back</a>
+    <a href="{{ next_url | default('/TokenManager')}}" class="button">Back</a>
 </div>
 
 </body>

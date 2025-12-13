@@ -1,175 +1,188 @@
 # OrderManager.py
 # -------------------------------------------------
-# Fully updated for Shree Laxmi Collection
-# Handles supplier orders, inventory updates, and order management
-# Size comes before Color to match database schema
+# Shree Laxmi Collection – Final Production Version
+# Handles Supplier Orders and Inventory Updates
 # -------------------------------------------------
 
 from decimal import Decimal
 from CmsLib.InventoryManager import *
 from CmsLib.ProductManager import *
 
-# Global variables for OrderID management
+# Auto-increment cache
 next_order_id = None
-next_order_id_read = 0
+next_order_id_read = False
+
 
 class OrderManager:
 
     # ---------- PRIVATE METHODS ----------
 
     @staticmethod
-    def __place_order(pysql, products_quantities):
-        """
-        Place a supplier order.
-        products_quantities: list of tuples (ProductID, Size, Color, Quantity)
-        """
+    def __load_next_order_id(pysql):
+        """Reads MAX OrderID and sets the next number."""
         global next_order_id, next_order_id_read
 
+        pysql.run("SELECT OrderID FROM Orders ORDER BY OrderID DESC LIMIT 1")
+        last_id = pysql.scalar_result
+
+        if last_id:
+            num = int(last_id.replace("ORD-", ""))
+            next_order_id = num + 1
+        else:
+            next_order_id = 1  # First order
+
+        next_order_id_read = True
+
+    @staticmethod
+    def __place_order(pysql, items):
+        """
+        items = [(ProductID, Size, Color, Quantity)]
+        """
+
+        global next_order_id, next_order_id_read
+
+        # Load next order id if not read yet
         if not next_order_id_read:
-            pysql.run("SELECT COUNT(*) FROM Orders")
-            next_order_id = pysql.scalar_result
-            next_order_id_read = 1
+            OrderManager.__load_next_order_id(pysql)
 
-            # Validate products and merge duplicates
-            merged_products = {}
-            for product_id, size, color, quantity in products_quantities:
-                if not ProductManager._ProductManager__product_exists(pysql, product_id, size, color):
-                    return 1  # Product not found
-                if Decimal(quantity) <= 0:
-                    return 2  # Invalid quantity
-                key = (product_id, size, color)
-                merged_products[key] = merged_products.get(key, Decimal("0")) + Decimal(quantity)
+        # Merge duplicate items
+        merged = {}
+        for pid, size, color, qty in items:
 
-        # Create order ID
-        order_id = "ORD-" + format(next_order_id, "010d")
+            if not ProductManager._ProductManager__product_exists(pysql, pid, size, color):
+                return 1 # Product does not exist
 
-        # Insert order
+            qty = Decimal(qty)
+            if qty <= 0:
+                return 2 #Invalid quantity
+
+            merged[(pid, size, color)] = merged.get((pid, size, color), Decimal(0)) + qty
+
+        # Create final order id
+        order_id = f"ORD-{next_order_id:010d}"
+
+        # Insert into Orders
         pysql.run(
-            "INSERT INTO Orders (OrderID, OrderDate) VALUES (%s, (CURRENT_TIMESTAMP))",
+            "INSERT INTO Orders (OrderID, OrderDate, Delivered, Cancelled) "
+            "VALUES (%s, CURRENT_TIMESTAMP, 0, 0)",
             (order_id,)
         )
 
-        # Insert order products
-        order_rows = [(order_id, pid, size, color, qty) for (pid, size, color), qty in merged_products.items()]
+        # Insert each product
+        rows = [(order_id, pid, size, color, qty) for (pid, size, color), qty in merged.items()]
         pysql.run_many(
-            "INSERT INTO OrdersOfProducts (OrderID, ProductID, Size, Color, Quantity) VALUES (%s,%s,%s,%s,%s)",
-            order_rows
+            "INSERT INTO OrdersOfProducts (OrderID, ProductID, Size, Color, Quantity) "
+            "VALUES (%s, %s, %s, %s, %s)",
+            rows
         )
 
         next_order_id += 1
-        return order_id
+        return (order_id)
 
     @staticmethod
     def __get_order_status(pysql, order_id):
-        pysql.run("SELECT Delivered, Cancelled FROM Orders WHERE OrderID = %s", (order_id,))
-        status = pysql.first_result
-        if status is None:
-            return None  # Order not found
-        # Ensure returned values are integers or booleans
-        delivered, cancelled = status
-        return bool(delivered), bool(cancelled)
+        pysql.run("SELECT Delivered, Cancelled FROM Orders WHERE OrderID=%s", (order_id,))
+        row = pysql.first_result
+        if not row:
+            return None
+        d, c = row
+        return (bool(d), bool(c))
 
     @staticmethod
     def __cancel_order(pysql, order_id):
-        status = OrderManager._OrderManager__get_order_status(pysql, order_id)
-        if status is None:
-            return 4 # order not found
-        delivered, cancelled = status
-        if delivered and cancelled:
-            return 1 # Already delivered & cancelled (invalid)
-        if delivered:
-            return 2  # Already delivered
-        if cancelled:
-            return 3  # Already cancelled
-
-        pysql.run("UPDATE Orders SET Delivered = 0, Cancelled = 1 WHERE OrderID = %s", (order_id,))
-        return 0
-
-    @staticmethod
-    def __receive_order(pysql, order_id):
-        status = OrderManager._OrderManager__get_order_status(pysql, order_id)
+        status = OrderManager.__get_order_status(pysql, order_id)
         if status is None:
             return 4
         delivered, cancelled = status
-        if delivered and cancelled:
-            return 1 # Already delivered & cancelled (invalid)
         if delivered:
             return 2
         if cancelled:
             return 3
 
-        # Fetch products
+        pysql.run("UPDATE Orders SET Cancelled=1 WHERE OrderID=%s", (order_id,))
+        return 0
+
+    @staticmethod
+    def __receive_order(pysql, order_id):
+        status = OrderManager.__get_order_status(pysql, order_id)
+        if status is None:
+            return 4
+        delivered, cancelled = status
+        
+        if delivered:
+            return 2
+        if cancelled:
+            return 3
+
+        # Retrieve order products
         pysql.run(
-            "SELECT ProductID, Size, Color, Quantity FROM OrdersOfProducts WHERE OrderID = %s",
+            "SELECT ProductID, Size, Color, Quantity "
+            "FROM OrdersOfProducts WHERE OrderID=%s",
             (order_id,)
         )
-        products_list = pysql.result
+        rows = pysql.result or []
 
-        for product_id, size, color, quantity in products_list:
-            # Check if inventory row exists
+        for pid, size, color, qty in rows:
+
+            qty = Decimal(qty)
+            threshold = max(1, round(qty * Decimal("0.10")))
+
             pysql.run(
                 "SELECT COUNT(*) FROM Inventory WHERE ProductID=%s AND Size=%s AND Color=%s",
-                (product_id, size, color)
+                (pid, size, color)
             )
             exists = pysql.scalar_result
 
-            threshold_value = max(1, round(quantity * Decimal("0.1")))
-
             if exists:
-                # Update stored quantity
                 pysql.run(
-                    "UPDATE Inventory SET StoredQuantity = StoredQuantity + %s WHERE ProductID=%s AND Size=%s AND Color=%s",
-                    (quantity, product_id, size, color)
+                    "UPDATE Inventory SET StoredQuantity = StoredQuantity + %s, "
+                    "StoreThreshold = GREATEST(StoreThreshold, %s)"
+                    "WHERE ProductID=%s AND Size=%s AND Color=%s",
+                    (qty, threshold, pid, size, color)
                 )
-                
             else:
-                # Insert new inventory row
                 pysql.run(
-                    "INSERT INTO Inventory (ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold) VALUES (%s,%s,%s,%s,%s,%s)",
-                    (product_id, size, color, quantity, 0, threshold_value)
+                    "INSERT INTO Inventory "
+                    "(ProductID, Size, Color, StoredQuantity, DisplayedQuantity, StoreThreshold) "
+                    "VALUES (%s, %s, %s, %s, 0, %s)",
+                    (pid, size, color, qty, threshold)
                 )
 
-            # Log transaction
-            InventoryManager._InventoryManager__log_transaction(pysql, "INVENTORY_ADD", product_id, size, color, quantity)
+            InventoryManager._InventoryManager__log_transaction(
+                pysql, "INVENTORY_ADD", pid, size, color, qty
+            )
 
-        # Mark order as delivered
-        pysql.run("UPDATE Orders SET Delivered = 1 WHERE OrderID = %s", (order_id,))
+        pysql.run("UPDATE Orders SET Delivered=1 WHERE OrderID=%s", (order_id,))
         return 0
 
     @staticmethod
     def __get_orders(pysql):
-        pysql.run("SELECT * FROM Orders")
+        pysql.run("SELECT * FROM Orders ORDER BY OrderDate DESC")
         return pysql.result
 
     @staticmethod
     def __get_order_details(pysql, order_id):
-        pysql.run("SELECT * FROM Orders WHERE OrderID = %s", (order_id,))
-        order_status = pysql.first_result
+
+        pysql.run("SELECT * FROM Orders WHERE OrderID=%s", (order_id,))
+        header = pysql.first_result
 
         pysql.run(
-                "SELECT O.ProductID, P.Name, O.Size, O.Color, O.Quantity, P.UnitType "
-                "FROM OrdersOfProducts O "
-                "JOIN Products P ON O.ProductID = P.ProductID AND O.Size = P.Size AND O.Color = P.Color "
-                "WHERE O.OrderID = %s",
-              (order_id,)
-          )
-
-        order_details = pysql.result
-        return order_status, order_details
-
-    @staticmethod
-    def __get_orders_between_date(pysql, start_date, end_date):
-        pysql.run(
-            "SELECT * FROM Orders WHERE DATE(OrderDate) BETWEEN %s AND %s",
-            (start_date, end_date)
+            "SELECT O.ProductID, P.Name, O.Size, O.Color, O.Quantity, P.UnitType "
+            "FROM OrdersOfProducts O "
+            "JOIN Products P ON O.ProductID=P.ProductID "
+            "AND O.Size=P.Size AND O.Color=P.Color "
+            "WHERE O.OrderID=%s",
+            (order_id,)
         )
-        return pysql.result
+
+        items = pysql.result
+        return (header, items)
 
     # ---------- PUBLIC WRAPPERS ----------
 
     @staticmethod
-    def place_order(pysql, products_quantities):
-        return pysql.run_transaction(OrderManager.__place_order, products_quantities)
+    def place_order(pysql, items):
+        return pysql.run_transaction(OrderManager.__place_order, items)
 
     @staticmethod
     def get_order_status(pysql, order_id):
@@ -190,7 +203,3 @@ class OrderManager:
     @staticmethod
     def get_order_details(pysql, order_id):
         return pysql.run_transaction(OrderManager.__get_order_details, order_id, commit=False)
-
-    @staticmethod
-    def get_orders_between_date(pysql, start_date, end_date):
-        return pysql.run_transaction(OrderManager.__get_orders_between_date, start_date, end_date, commit=False)

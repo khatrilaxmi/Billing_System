@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Alert</title>
+<title>Success</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -11,25 +11,25 @@
         padding-top: 80px;
     }
 
-    .alert-container {
+    .success-container {
         display: inline-block;
         text-align: center;
     }
 
-    .alert-circle {
+    /* Circle */
+    .success-circle {
         width: 50px;
         height: 50px;
         position: relative;
         margin: 0 auto 20px auto;
     }
 
-    /* Circle color same as exclamation mark */
-    .alert-circle:before {
+    .success-circle:before {
         content: '';
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        border: 4px solid #f1c40f; /* bright yellow */
+        border: 4px solid #2ecc71; /* faded green circle */
         position: absolute;
         top: 0;
         left: 0;
@@ -37,31 +37,28 @@
         animation: popIn 0.4s ease-out;
     }
 
-    .alert-mark {
-        width: 4px;
-        height: 20px;
-        background-color: #f1c40f; /* bright yellow */
+    /* Checkmark */
+    .checkmark {
+        width: 20px;
+        height: 10px;
+        border-left: 4px solid #2ecc71;
+        border-bottom: 4px solid #2ecc71;
+        transform: rotate(-45deg);
         position: absolute;
-        top: 8px;
-        left: 23px;
-        border-radius: 2px;
-        animation: drawAlert 0.4s ease-out 0.3s backwards;
+        top: 16px;
+        left: 14px;
+        animation: drawCheck 0.4s ease-out 0.3s backwards;
     }
 
-    .alert-dot {
-        width: 4px;
-        height: 4px;
-        background-color: #f1c40f;
-        position: absolute;
-        bottom: 8px;
-        left: 23px;
-        border-radius: 50%;
-        animation: drawAlert 0.4s ease-out 0.5s backwards;
-    }
-
-    @keyframes drawAlert {
-        0% { opacity: 0; transform: scale(0); }
-        100% { opacity: 1; transform: scale(1); }
+    @keyframes drawCheck {
+        0% {
+            opacity: 0;
+            transform: scale(0) rotate(-45deg);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(-45deg);
+        }
     }
 
     @keyframes popIn {
@@ -73,18 +70,16 @@
     h2 {
         color: #333;
         font-size: 2rem;
-        margin-top: 10px;
         margin-bottom: 30px;
     }
 
-    /* Back button in yellow */
     .button {
         display: inline-block;
         padding: 12px 20px;
         font-size: 1rem;
         font-weight: bold;
         color: white;
-        background-color: #f1c40f; /* yellow button */
+        background-color: #27ae60;
         border-radius: 8px;
         text-decoration: none;
         box-shadow: 2px 2px 6px #aaa;
@@ -93,21 +88,19 @@
     }
 
     .button:hover {
-        background-color: #f4d03f; /* slightly brighter yellow on hover */
+        background-color: #2ecc71;
     }
 </style>
 </head>
 <body>
 
-<div class="alert-container">
-    <div class="alert-circle">
-        <div class="alert-mark"></div>
-        <div class="alert-dot"></div>
+<div class="success-container"> 
+    <div class="success-circle">
+        <div class="checkmark"></div>
     </div>
 
-    <h2>{{ result }}</h2>
-
-    <a href="{{ next_url | default('/TokenManager')}}" class="button">Back</a>
+    <h2>{{ message }}</h2>
+    <a href="{{ url_for('login') }}" class="button">Go back to Login</a>
 </div>
 
 </body>

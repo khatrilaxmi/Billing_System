@@ -2,45 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Inventory Manager Home</title>
+    <title>Inventory Manager Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background: #f0f2f5;
             margin: 0;
             padding: 20px;
         }
 
-        h2 {
-            color: #d35400;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
+        .header {
             text-align: center;
-            text-shadow: 1px 1px 2px #aaa;
+            padding: 15px 10px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        h3 {
-            color: #34495e;
-            margin: 20px 0 10px 0;
+        .header h2 {
+            margin: 0;
+            font-size: 1.8rem;
         }
 
-        form {
+        .header p {
+            margin: 5px 0 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .dashboard-card {
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 400px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
         }
 
-        .button {
+        .dashboard-card i {
+            font-size: 2rem;
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: #f9fff9;
+        }
+
+        /* Back Button */
+        .back-button {
             display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            width: 100px;
+            padding: 12px 0;
+            margin: 25px auto 0;
             font-size: 1.1rem;
             font-weight: bold;
             text-align: center;
@@ -48,56 +85,51 @@
             background-color: #27ae60;
             border: none;
             border-radius: 10px;
-            box-shadow: 2px 2px 6px #aaa;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
-        .button:hover {
+        .back-button:hover {
             background-color: #2ecc71;
-            transform: translateY(-3px);
-            box-shadow: 3px 3px 8px #888;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
         }
 
-        a.button {
-            text-align: center;
+        form {
+            margin: 0;
         }
-        .back-button {
-        width: auto;           /* Make it only as wide as text */
-        background-color: #27ae60; 
-        padding: 10px 20px;
-        margin-top: 20px;
-         }
-
-     .back-button:hover {
-     background-color: #2ecc71;
-     transform: translateY(-2px);
-     box-shadow: 3px 3px 8px #888;
-      }
-
     </style>
 </head>
 <body>
-    <h2>Choose One of the Options</h2>
+
+    <div class="header">
+        <h2>Inventory Manager</h2>
+        <p>Manage Products, Orders & Inventory efficiently</p>
+    </div>
+
     <form method="POST" action="">
-        <h3>Products:</h3>
-        <input type="submit" name="AddProduct" value="Add a Product" class="button">
-        <input type="submit" name="ViewProducts" value="View Products" class="button">
+        <div class="dashboard-grid">
+            <!-- Products -->
+            <button type="submit" name="AddProduct" class="dashboard-card"><i class="fas fa-plus-circle"></i>Add Product</button>
+            <button type="submit" name="ViewProducts" class="dashboard-card"><i class="fas fa-eye"></i>View Products</button>
 
-        <h3>Orders:</h3>
-        <input type="submit" name="PlaceOrder" value="Place an Order" class="button">
-        <input type="submit" name="ReceiveOrder" value="Receive an Order" class="button">
-        <input type="submit" name="CancelOrder" value="Cancel an Order" class="button">
-        <input type="submit" name="OrderDetails" value="Order Details" class="button">
-        <input type="submit" name="OrdersBetweenDates" value="Orders Between Dates" class="button">
+            <!-- Orders -->
+            <button type="submit" name="PlaceOrder" class="dashboard-card"><i class="fas fa-cart-plus"></i>Place Order</button>
+            <button type="submit" name="ReceiveOrder" class="dashboard-card"><i class="fas fa-truck"></i>Receive Order</button>
+            <button type="submit" name="CancelOrder" class="dashboard-card"><i class="fas fa-ban"></i>Cancel Order</button>
+            <button type="submit" name="OrderDetails" class="dashboard-card"><i class="fas fa-file-alt"></i>Order Details</button>
+            <!--<button type="submit" name="OrdersBetweenDates" class="dashboard-card"><i class="fas fa-calendar-alt"></i>Orders Between Dates</button> -->
 
-        <h3>Inventory:</h3>
-        <input type="submit" name="ViewInventory" value="View Inventory" class="button">
-        <input type="submit" name="TransactionLog" value="View Transaction Log" class="button">
-        <input type="submit" name="ProductDateTransactionLog" value="View Product Transactions By Date" class="button">
+            <!-- Inventory -->
+            <button type="submit" name="ViewInventory" class="dashboard-card"><i class="fas fa-warehouse"></i>View Inventory</button>
+            <!--<button type="submit" name="TransactionLog" class="dashboard-card"><i class="fas fa-history"></i>Transaction Log</button>
+            <button type="submit" name="ProductDateTransactionLog" class="dashboard-card"><i class="fas fa-clock"></i>Product Transactions By Date</button> -->
+        </div>
     </form>
-    <br>
-   <a href='/' class="button back-button">Back</a>
+
+    <a href="/" class="back-button"> Back</a>
+
 </body>
 </html>
