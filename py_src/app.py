@@ -81,12 +81,20 @@ def register():
         if not username or not password or not confirm:
             error = "Please fill all fields"
             return render_template("login/register.html", error=error)
+        
+
 
         if password != confirm:
             error = "Passwords do not match"
             return render_template("login/register.html", error=error)
         
         errors = [] #collect all errors
+        if len(username) > 16:
+            errors.append("Username must be at atmost 16 characters.")
+            
+        if re.search(r"\s", username):
+            errors.append("Username must not contain spaces.")
+        
         if len(password) <8 or len(password) > 16:
             errors.append("Password length must be 8-16 characters.")
         

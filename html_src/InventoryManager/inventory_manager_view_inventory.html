@@ -1,44 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Inventory Details</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
+        /* ---------- General Styles ---------- */
         body {
             font-family: 'Arial', sans-serif;
             background: #f9f9f9;
             margin: 20px;
-        }
-        h2 {
             color: #333;
+        }
+
+        h2 {
+            text-align: center;
             font-size: 2rem;
             margin-bottom: 20px;
-            text-align: center;
             text-shadow: 1px 1px 2px #aaa;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             background: #fff;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         th {
-            background-color: #27ae60; /* Main green like buttons */
+            background-color: #27ae60;
             color: white;
             padding: 12px;
             text-align: left;
         }
+
         td {
             padding: 12px;
             border-bottom: 1px solid #ddd;
         }
+
         tr:hover {
             background-color: #f1f1f1;
         }
-        .button {
+
+        /* ---------- Buttons ---------- */
+        .button,
+        #printBtn {
             display: inline-block;
             padding: 12px 20px;
             margin-top: 20px;
@@ -54,24 +64,116 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        .button:hover {
+
+        .button:hover,
+        #printBtn:hover {
             background-color: #2ecc71;
             transform: translateY(-2px);
             box-shadow: 3px 3px 8px #888;
         }
+
         .back-button {
-            background-color: #27ae60;  
-            padding: 10px 20px;
+            margin-left: 10px;
         }
-        .back-button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-2px);
+
+        /* ---------- Print Styles ---------- */
+        @media print {
+
+            @page {
+                margin: 0;
+                /* remove default header/footer margins */
+            }
+
+            #printBtn,
+            .back-button {
+                display: none !important;
+            }
+
+            body {
+                margin: 10mm !important;
+                background-color: white !important;
+                color: black !important;
+            }
+
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            th,
+            td {
+                border: 1px solid black !important;
+                padding: 8px !important;
+                font-size: 12pt !important;
+                text-align: left !important;
+            }
+
+            tr:hover {
+                background-color: white !important;
+            }
+
+            h2 {
+                text-align: center !important;
+                color: black !important;
+            }
+        }
+
+        /* ---------- Responsive ---------- */
+        @media screen and (max-width: 768px) {
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead tr {
+                display: none;
+            }
+
+            tbody tr {
+                margin-bottom: 15px;
+                background: #fff;
+                padding: 12px;
+                border-radius: 6px;
+                box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+            }
+
+            tbody td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                font-weight: bold;
+                text-align: left;
+            }
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("printBtn").addEventListener("click", function () {
+                window.print(); // Opens the browser print dialog
+            });
+        });
+    </script>
 </head>
-<body>
-    <h2>{{Title}}</h2>
 
+<body>
+
+    <h2>{{ Title }}</h2>
+
+    <!-- Inventory Table -->
     <table>
         <thead>
             <tr>
@@ -87,18 +189,23 @@
         <tbody>
             {% for row in inventory %}
             <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row[1] }}</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
-                <td>{{ row[4] }}</td>
-                <td>{{ row[5] }}</td>
-                <td>{{ row[6] }}</td>
+                <td data-label="Product ID">{{ row[0] }}</td>
+                <td data-label="Product Name">{{ row[1] }}</td>
+                <td data-label="Size">{{ row[2] }}</td>
+                <td data-label="Color">{{ row[3] }}</td>
+                <td data-label="Stored Quantity">{{ row[4] }}</td>
+                <td data-label="Displayed Quantity">{{ row[5] }}</td>
+                <td data-label="Minimum Threshold">{{ row[6] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    
-    <a href="{{ next_url | default('/InventoryManager') }}" class="button back-button">Back</a>
+    <div style="margin-top: 20px; text-align: center;">
+        <!-- Print Button -->
+        <input type="button" id="printBtn" value="Print">
+        <!-- Back Button -->
+        <a href="{{ next_url | default('/InventoryManager') }}" class="button back-button">Back</a>
+    </div>
 </body>
+
 </html>

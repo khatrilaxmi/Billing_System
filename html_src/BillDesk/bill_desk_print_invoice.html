@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Invoice Preview</title>
@@ -21,12 +22,15 @@
             margin-bottom: 0;
         }
 
-        h2, h3, h4 {
+        h2,
+        h3,
+        h4 {
             margin: 5px 0;
             font-weight: bold;
         }
 
-        h3, h4 {
+        h3,
+        h4 {
             display: inline;
         }
 
@@ -46,7 +50,7 @@
             margin: 20px auto;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
         }
 
         thead {
@@ -54,7 +58,8 @@
             color: white;
         }
 
-        th, td {
+        th,
+        td {
             text-align: center;
             padding: 10px;
             border: 1px solid #ddd;
@@ -97,70 +102,92 @@
             color: #555;
             margin-top: 20px;
         }
+
         /* Move ALL print styles to the very end of your CSS */
-@media print {
-    /* Hide non-printable elements */
-    #mybutton, .header-row span {
-        display: none !important;
-    }
-    
-    /* Reset body for printing */
-    body { 
-        margin: 0 !important;
-        padding: 0 !important;
-        background-color: white !important;
-        color: black !important;
-        font-size: 12pt !important;
-        line-height: 1.2 !important;
-    }
-    
-    /* Ensure table displays correctly */
-    table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        display: table !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        margin: 10px 0 !important;
-    }
-    
-    /* Force table structure */
-    thead {
-        display: table-header-group !important;
-        background-color: #ccc !important;
-    }
-    
-    tbody {
-        display: table-row-group !important;
-    }
-    
-    tr {
-        display: table-row !important;
-        page-break-inside: avoid !important;
-    }
-    
-    th, td {
-        display: table-cell !important;
-        border: 1px solid #000 !important;
-        padding: 6px 4px !important;
-        text-align: center !important;
-        font-size: 10pt !important;
-    }
-    
-    /* Ensure proper text alignment */
-    h1, h2, h3, h4, p {
-        color: black !important;
-        text-align: center !important;
-    }
-    
-    /* Prevent page breaks in critical sections */
-    .header-row, h1, table {
-        page-break-inside: avoid !important;
-    }
-}
+        @media print {
+
+            /* Hide non-printable elements */
+            #mybutton,
+            .header-row span {
+                display: none !important;
+            }
+
+            @page {
+                margin: 0;
+                /* remove default header/footer margins */
+            }
+
+
+            /* Reset body for printing */
+            body {
+                margin: 10mm !important;
+                padding: 0 !important;
+                background-color: white !important;
+                color: black !important;
+                font-size: 12pt !important;
+                line-height: 1.2 !important;
+            }
+
+            /* Ensure table displays correctly */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                display: table !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 10px 0 !important;
+            }
+
+            /* Force table structure */
+            thead {
+                display: table-header-group !important;
+                background-color: #ccc !important;
+            }
+
+            tbody {
+                display: table-row-group !important;
+            }
+
+            tr {
+                display: table-row !important;
+                page-break-inside: avoid !important;
+            }
+
+            th,
+            td {
+                display: table-cell !important;
+                border: 1px solid #000 !important;
+                padding: 6px 4px !important;
+                text-align: center !important;
+                font-size: 10pt !important;
+            }
+
+            /* Ensure proper text alignment */
+            h1,
+            h2,
+            h3,
+            h4,
+            p {
+                color: black !important;
+                text-align: center !important;
+            }
+
+            /* Prevent page breaks in critical sections */
+            .header-row,
+            h1,
+            table {
+                page-break-inside: avoid !important;
+            }
+        }
 
         @media screen and (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
                 display: block;
             }
 
@@ -173,7 +200,7 @@
                 background: #fff;
                 padding: 12px;
                 border-radius: 6px;
-                box-shadow: 0 0 6px rgba(0,0,0,0.1);
+                box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
             }
 
             tbody td {
@@ -194,8 +221,8 @@
     </style>
     <script>
         // Print invoice when button is clicked
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("mybutton").addEventListener("click", function() {
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("mybutton").addEventListener("click", function () {
                 window.print(); // Opens the browser print dialog
             });
         });
@@ -210,15 +237,19 @@
         <span>Cash Invoice</span>
     </div>
 
-    <h1>Invoice Preview</h1>
+    <h1>Invoice</h1>
     <p style="text-align: center;"><strong>Shree Laxmi Collection</strong></p>
     <p style="text-align: center;">Narephat, Kathmandu, Nepal</p>
     <p style="text-align: center;">Tel: 01560930</p>
     <br>
 
     <!-- Invoice Info -->
-    <h4>Invoice ID:</h4> {{ invoice_header[0] }} &nbsp;&nbsp; <h4>Timestamp:</h4> {{ invoice_header[1] }}<br>
-    <p><strong>Payment mode:</strong> {{ invoice_header[4] }}</p><br>
+    <div style="display: flex; justify-content: center; gap: 20px; font-size: 1rem; margin-bottom: 30px;">
+        <div><strong>Invoice ID:</strong> {{ invoice_header[0] }}</div>
+        <div><strong>Timestamp:</strong> {{ invoice_header[1] }}</div>
+        <div><strong>Payment mode:</strong> {{ invoice_header[4] }}</div>
+    </div>
+
 
     <!-- Products Table -->
     <table>
@@ -241,7 +272,7 @@
                 <td>{{ row[3] }}</td> <!-- Color -->
                 <td>{{ row[4] }}</td> <!-- Quantity -->
                 <td>{{ row[5] }}</td> <!-- Rate -->
-                <td>{{  "%.3f"|format(row[4] *row[5]) }}</td> <!-- Total Amount -->
+                <td>{{ "%.3f"|format(row[4] *row[5]) }}</td> <!-- Total Amount -->
                 <td>{{ row[7] }}%</td> <!-- Discount-->
             </tr>
             {% endfor %}
@@ -251,9 +282,9 @@
 
     <!-- Invoice Totals -->
     <div style="text-align: center; margin-top: 20px;">
-       <h4 style="margin: 10px, 0;">Total Discount :</h4> {{ invoice_header[3] }}<br>
-       <h4 style="margin: 10px, 0;">VAT (13%) :</h4> {{ invoice_products | sum(attribute=6) }}<br>
-       <h4 style="margin: 10px, 0;">Bill Amount :</h4> {{ invoice_header[2] }}
+        <h4 style="margin: 10px, 0;">Total Discount :</h4> {{ invoice_header[3] }}<br>
+        <h4 style="margin: 10px, 0;">VAT (13%) :</h4> {{ invoice_products | sum(attribute=6) }}<br>
+        <h4 style="margin: 10px, 0;">Bill Amount :</h4> {{ invoice_header[2] }}
     </div>
 
     <!-- Footer Note -->
@@ -262,4 +293,5 @@
     </p>
 
 </body>
+
 </html>
