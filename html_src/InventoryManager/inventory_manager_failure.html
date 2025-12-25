@@ -86,7 +86,7 @@
 
     <h2>{{ reason }}</h2>
 
-    <a href= "javascript:history.back()" class="button">Back</a>
+    <a href= "{{ next_url | default('/InventoryManager') }}" class="button">Back</a>
 </div>
 
 </body>

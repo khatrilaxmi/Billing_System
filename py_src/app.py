@@ -89,8 +89,11 @@ def register():
             return render_template("login/register.html", error=error)
         
         errors = [] #collect all errors
-        if len(username) > 16:
-            errors.append("Username must be at atmost 16 characters.")
+        if len(username) < 5 or  len(username) > 16:
+            errors.append("Username must be between 5-16 characters.")
+            
+        if re.search(r"[A-Za-z]",username):
+            errors.append("Username must contain at least one alphabet")
             
         if re.search(r"\s", username):
             errors.append("Username must not contain spaces.")
@@ -133,6 +136,71 @@ def register():
         return render_template("login/register_success.html", message="Registration successful! You can now Login.")
 
     return render_template("login/register.html")
+
+# =========================
+# forget-password Page
+# =========================
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password ():
+    error = None
+    success = None
+
+    if request.method == "POST":
+        username = request.form.get("username").strip()
+        new_password = request.form.get("new_password").strip()
+        new_confirm = request.form.get("new_confirm").strip()
+
+        # Validate fields
+        if not username or not new_password or not new_confirm:
+            error = "Please fill all fields"
+            return render_template("login/forgot_password.html", error=error)
+        
+
+
+        if new_password != new_confirm:
+            error = "Passwords do not match"
+            return render_template("login/forgot_password.html", error=error)
+        
+        errors = [] #collect all errors   
+        if len(new_password) <8 or len(new_password) > 16:
+            errors.append("Password length must be 8-16 characters.")
+        
+        if not re.search(r"[A-Z]", new_password):
+            errors.append("Password must contain at least one uppercase letter.")
+        
+        if not re.search(r"\d", new_password):
+            errors.append("Password must contain at least one digit.")
+
+        if not re.search(r"[^A-Za-z0-9]", new_password):
+            errors.append("Password must contain at least one special character.")
+
+        if re.search(r"\s", new_password):
+            errors.append("Password must not contain spaces.")
+
+        if errors:
+            return render_template("login/forgot_password.html", errors = errors)
+
+
+        # Check existing username
+        sql = "SELECT COUNT(*) FROM Users WHERE Username=%s"
+        pysql.run(sql, (username,))
+        exists = pysql.scalar_result
+
+        if exists == 0:
+            errors = ["Username does not exist"]
+            return render_template("login/forgot_password.html", errors=errors)
+
+        # Hash password
+        password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+
+        # Insert new user
+        sql = "UPDATE Users SET PasswordHash=%s WHERE Username=%s"
+        pysql.run(sql, (password_hash, username))
+        pysql.commit()
+        success = "Password reset successful. You can now login."
+        return render_template("login/forgot_password.html", success=success)
+
+    return render_template("login/forgot_password.html")
 
 
 # =========================
@@ -233,9 +301,6 @@ def index():
 def logout():
     session.clear()
     return redirect(url_for("login"))
-
-
-
 
 # =========================
 # Inventory Manager
@@ -685,6 +750,7 @@ def token_manager_details():
     if request.method == 'POST':
         token_id = request.form['TokenID']
         details = TokenManager.get_token_details(pysql, token_id)
+        print(details)
         if not details:  
                 return render_template('/TokenManager/token_manager_alert.html', result="No token details found")
         return render_template('/TokenManager/token_manager_get_token_details.html', details=details, token_id=token_id, Title="Token Details")

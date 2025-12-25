@@ -107,9 +107,7 @@ class TokenManager:
         """
         sql_stmt = "SELECT DISTINCT `TokenID` FROM `TokensSelectProducts`"
         pysql.run(sql_stmt)
-        
-        pending_tokens = [row[0] for row in pysql.result]
-        print("Pending Tokens okay:", pending_tokens)
+
         if not pysql.result:
             return []
         return [row[0] for row in pysql.result]

@@ -86,7 +86,7 @@ with app.app_context():
     # -----------------------------
     CounterManager.add_counter_to_token(pysql, tok1, "KUR-001", "S", "Red", 1)
     CounterManager.add_counter_to_token(pysql, tok1, "TOP-004", "M", "Blue", 2)
-    CounterManager.add_counter_to_token(pysql, tok2, "SAR-003", "L", "Golden,", 1)
+    CounterManager.add_counter_to_token(pysql, tok2, "SAR-003", "L", "Golden", 1)
     CounterManager.add_counter_to_token(pysql, tok2, "DRS-006", "S", "Black", 1)
 
     # -----------------------------

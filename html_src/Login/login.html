@@ -39,12 +39,13 @@
         }
 
         input {
-
+            width: 100%;
             padding: 11px;
             margin-top: 5px;
             border-radius: 10px;
             border: 1px solid #ccc;
             font-size: 1rem;
+            box-sizing: border-box;
         }
 
         button {
@@ -96,8 +97,8 @@
         }
 
         .forgot-password {
-            align-self: flex-start;
-            margin-top: 10px;
+            display: block;
+            margin-top: 8px;
             font-size: 0.9rem;
             text-decoration: none;
             color: #34495e;
@@ -159,26 +160,64 @@
         .toggle-password:hover {
             opacity: 1;
         }
+
+        .label-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .label-with-icon i {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            color: #27ae60;
+        }
+
+        .label-with-icon label {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .form-group {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body>
     <div class="form-wrapper">
         <h2 style="color: #34495e; text-align: center;">
-            Welcome to Login Page
+            Welcome to Login Page!
         </h2>
 
         <form method="post" action="/login" autocomplete="off">
             {% if error %}
             <div style="color:red; margin-bottom:10px;">{{ error }}</div>
             {% endif %}
-            <label>Username</label>
-            <input type="text" name="username" required>
-
-            <label>Password</label>
-            <div class="password-wrapper">
-                <input type="password" name="password" id="password" required autocomplete="new-password">
-                <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+            <div class="form-group">
+                <div class="label-with-icon">
+                    <i class="fa-solid fa-user"></i>
+                    <label>Username</label>
+                </div>
+                <input type="text" name="username" required, placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <div class="label-with-icon">
+                    <i class="fa-solid fa-lock"></i>
+                    <label>Password</label>
+                </div>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="password" required autocomplete="new-password" ,
+                        placeholder="Enter password">
+                    <i class="fa-regular fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+                </div>
+                <a href="/forgot-password" class="forgot-password">forgot password?</a>
             </div>
 
             <script>
@@ -195,9 +234,7 @@
                     }
                 }
             </script>
-
             <button type="submit" class="login-btn">Login</button>
-
             <div class="or-container">
                 <div class="line"></div>
                 <div class="or-text">or</div>

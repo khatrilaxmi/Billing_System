@@ -56,6 +56,8 @@
             text-decoration: none;
             box-shadow: 2px 2px 5px #999;
             transition: 0.2s;
+            cursor: pointer;
+            border: none;
         }
 
         .button:hover {
@@ -67,8 +69,24 @@
         .btn-area {
             text-align: center;
             margin-top: 25px;
+            gap: 20px;
         }
 
+        /* --- Print Styles --- */
+        @media print {
+            body {
+                background-color: #fff;
+                margin: 0;
+            }
+
+            .button, .btn-area {
+                display: none; /* hide buttons when printing */
+            }
+
+            table {
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,25 +106,26 @@
             <th>Total Invoice</th>
         </tr>
     </thead>
-
     <tbody>
         {% for row in invoice_products %}
         <tr>
-            <td>{{ row[0] }}</td>   <!-- InvoiceID -->
-            <td>{{ row[1]}}</td>     <!--ProductID -->
-            <td>{{ row[2] }}</td>   <!-- Name -->
-            <td>{{ row[3] }}</td>   <!-- Size -->
-            <td>{{ row[4] }}</td>   <!-- Color -->
-            <td>{{ row[5] }}</td>   <!-- Quantity -->
-            <td>{{ row[6] }}</td>   <!-- Unit Price -->
-            <td>{{ row[7]}} </td>  <!-- Total invoice -->  
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1]}}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>{{ row[6] }}</td>
+            <td>{{ row[7]}} </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
 <div class="btn-area">
-    <a href="/index" class="button">Back</a>
+   
+    <button onclick="window.print()" class="button">Print</button>
+     <a href="/index" class="button">Back</a>
 </div>
 
 </body>
